@@ -31,17 +31,17 @@ var Menu = function() {
 
 		btnPlay = game.add.text(game.world.centerX, 500, "Play", style);
 		btnPlay.anchor.set(0.5);
-    	btnPlay.inputEnabled = true;
+		btnPlay.inputEnabled = true;
 		btnPlay.events.onInputUp.add(btnPlayOnClick, this);
 
 		btnOptions = game.add.text(game.world.centerX, 600, "Options", style);
 		btnOptions.anchor.set(0.5);
-    	btnOptions.inputEnabled = true;
+		btnOptions.inputEnabled = true;
 		btnOptions.events.onInputUp.add(btnOptionsOnClick, this);
 
 		btnAbout = game.add.text(game.world.centerX, 700, "About", style);
 		btnAbout.anchor.set(0.5);
-    	btnAbout.inputEnabled = true;
+		btnAbout.inputEnabled = true;
 		btnAbout.events.onInputUp.add(btnAboutOnClick, this);
 	}
 }
