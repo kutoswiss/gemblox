@@ -1,47 +1,50 @@
-var Menu = function() {
+var Menu = (function(){
+	// -----------------------------------------------------------
 	// --- Fields ------------------------------------------------
+	// -----------------------------------------------------------
 	var btnPlay;
-	var btnOptions;
-	var btnAbout;
+	var style;
 
+	// -----------------------------------------------------------
 	// --- Private functions -------------------------------------
-	var destroyAllBtns = function() {
-		btnPlay.destroy();
-		btnOptions.destroy();
-		btnAbout.destroy();
+	// -----------------------------------------------------------
+	/**
+	 * @brief Constructor
+	 */
+	var Menu = function(p_name) {
+		style = { font: "65px Arial", fill: "#ff0044", align: "center" };
 	}
 
+	/**
+	 * @brief Function to destroy all buttons
+	 */
+	var destroyAllBtns = function() {
+		btnPlay.destroy();
+	}
+
+	/**
+	 * @brief Delegate Button Play OnClick
+	 */
 	var btnPlayOnClick = function() {
 		destroyAllBtns();
 		chapters = new Chapters(2);
-		chapters.Show();
+		chapters.show();
 	}
 
-	var btnOptionsOnClick = function() {
-		// No code for the moment
-	}
-
-	var btnAboutOnClick = function() {
-		// No code for the moment
-	}
-
+	// -----------------------------------------------------------
 	// --- Public functions --------------------------------------
-	this.Show = function() {
-		var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
+	// -----------------------------------------------------------
+	Menu.prototype = {
+		/**
+		 * @brief Function to show the menu
+		 */
+		show: function() {
+			btnPlay = game.add.text(game.world.centerX, 500, "Play", style);
+			btnPlay.anchor.set(0.5);
+			btnPlay.inputEnabled = true;
+			btnPlay.events.onInputUp.add(btnPlayOnClick, this);
+		}
+	};
 
-		btnPlay = game.add.text(game.world.centerX, 500, "Play", style);
-		btnPlay.anchor.set(0.5);
-		btnPlay.inputEnabled = true;
-		btnPlay.events.onInputUp.add(btnPlayOnClick, this);
-
-		btnOptions = game.add.text(game.world.centerX, 600, "Options", style);
-		btnOptions.anchor.set(0.5);
-		btnOptions.inputEnabled = true;
-		btnOptions.events.onInputUp.add(btnOptionsOnClick, this);
-
-		btnAbout = game.add.text(game.world.centerX, 700, "About", style);
-		btnAbout.anchor.set(0.5);
-		btnAbout.inputEnabled = true;
-		btnAbout.events.onInputUp.add(btnAboutOnClick, this);
-	}
-}
+	return Menu;
+}());

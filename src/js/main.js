@@ -89,8 +89,8 @@ var gameState = gameState_e.MENU_MAIN;
 		game.scale.setScreenSize(true);
 	}
 
-	menu = new Menu();
-	menu.Show();
+	menu = new Menu("Gueule at");
+	menu.show();
 }
 
 /**
@@ -100,13 +100,22 @@ var gameState = gameState_e.MENU_MAIN;
  	switch(gameState) {
  		case gameState_e.IN_GAME:
 			// Update all blox's positions
-			for(var i = 0; i < gemBloxs.length; i++) {
-				gemBloxs[i].sprite.x = gemBloxs[i].position.x * TILE_SIZE;
-				gemBloxs[i].sprite.y = gemBloxs[i].position.y * TILE_SIZE;
-			}
+			for(var i = 0; i < gemBloxs.length; i++) 
+				gemBloxs[i].update();
 			break;
-		}
+
+		case gameState_e.MENU_MAIN:
+			break;
+
+		case gameState_e.MENU_CHAPTERS:
+			break;
+
+		case gameState_e.MENU_STAGES:
+			break;
+
+		default: break;
 	}
+}
 
 /**
  * @brief Function to check if the game is complete

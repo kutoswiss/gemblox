@@ -19,8 +19,18 @@ gemBloxArray[1] = e_GemBloxColor.BLUE;
 gemBloxArray[2] = e_GemBloxColor.GREEN;
 gemBloxArray[3] = e_GemBloxColor.YELLOW;
 
-function GemBlox(color, posX, posY) {
-	this.color = color;
+var GemBlox = function(p_color, posX, posY) {
+
+	
+	// These lines are not working :(, dunno why
+	/*this.color = e_GemBloxColor.RED;
+	this.position = {x: 0, y: 0};
+	this.sprite;
+
+	this.setPosition(posX, posY);
+	this.setColor(p_color);*/
+
+	this.color = p_color;
 	this.position = {x: posX, y: posY};
 
 	this.sprite = game.add.sprite(posX, posY, this.color.key);
@@ -55,21 +65,24 @@ function GemBlox(color, posX, posY) {
 		else
 			this.direction = (this.mouseUp.y > this.mouseDown.y) ? eDirection.DOWN : eDirection.UP;
 
-		this.Move(this.direction);
+		this.move(this.direction);
 	}
 
-	this.SetColor = function(gemBloxColor) {
-		this.color = gemBloxColor;
+	this.setColor = function(p_color) {
+		this.color = p_color;
 		this.sprite = game.add.sprite(this.position.x, this.position.y, this.color.key);
 	}
 
-	this.SetPosition = function(x, y) {
+	this.setPosition = function(x, y) {
 		this.position.x = x;
 		this.position.y = y;
 	}
 
-
-	this.Move = function(direction) {
+	/**
+	 * @brief Function to move the gemblox
+	 * @param Direction of the gemblox (direction enum type)
+	 */
+	this.move = function(direction) {
 		var tmpX = this.position.x;
 		var tmpY = this.position.y;
 
@@ -102,15 +115,23 @@ function GemBlox(color, posX, posY) {
 					if(tileMap.getGrid()[tmpY-1][tmpX].type.isAllowed == true)
 						tmpY = i;
 				break;
-			}
+		}
 
-			this.SetPosition(tmpX, tmpY);
+		this.setPosition(tmpX, tmpY);
 
-			if(tileMap.getGrid()[tmpY][tmpX].type == this.color.tile_to_reach) 
-				tileMap.getGrid()[tmpY][tmpX].type = this.color.tile_reached;
-			else {
-				this.previousTile = tileMap.getGrid()[tmpY][tmpX].type;
-				tileMap.getGrid()[tmpY][tmpX].type = e_TileType.BLOCK;
-			}
+		if(tileMap.getGrid()[tmpY][tmpX].type == this.color.tile_to_reach) 
+			tileMap.getGrid()[tmpY][tmpX].type = this.color.tile_reached;
+		else {
+			this.previousTile = tileMap.getGrid()[tmpY][tmpX].type;
+			tileMap.getGrid()[tmpY][tmpX].type = e_TileType.BLOCK;
+		}
+	}
+
+	/**
+	 * @brief Function to update the gemblox position visually
+	 */
+	this.update = function() {
+		this.sprite.x = this.position.x * TILE_SIZE;
+		this.sprite.y = this.position.y * TILE_SIZE;
 	}
 }
