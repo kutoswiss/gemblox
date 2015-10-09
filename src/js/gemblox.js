@@ -41,7 +41,7 @@ function GemBlox(color, posX, posY) {
 	function block_onMouseDown() {
 		this.mouseDown.x = game.input.activePointer.x;
 		this.mouseDown.y = game.input.activePointer.y;
-	};
+	}
 
 	function block_onMouseUp() {
 		this.mouseUp.x = game.input.activePointer.x;
@@ -56,17 +56,17 @@ function GemBlox(color, posX, posY) {
 			this.direction = (this.mouseUp.y > this.mouseDown.y) ? eDirection.DOWN : eDirection.UP;
 
 		this.Move(this.direction);
-	};
+	}
 
 	this.SetColor = function(gemBloxColor) {
 		this.color = gemBloxColor;
 		this.sprite = game.add.sprite(this.position.x, this.position.y, this.color.key);
-	};
+	}
 
 	this.SetPosition = function(x, y) {
 		this.position.x = x;
 		this.position.y = y;
-	};
+	}
 
 
 	this.Move = function(direction) {
@@ -80,9 +80,9 @@ function GemBlox(color, posX, posY) {
 
 		switch(this.direction) {
 			case eDirection.RIGHT:
-				for(var i = tmpX; i < tileMap.getWidth(); i++)
-					if(tileMap.getGrid()[tmpY][tmpX+1].type.isAllowed == true)
-						tmpX = i;
+			for(var i = tmpX; i < tileMap.getWidth(); i++)
+				if(tileMap.getGrid()[tmpY][tmpX+1].type.isAllowed == true)
+					tmpX = i;
 				break;
 
 			case eDirection.LEFT:
@@ -102,15 +102,15 @@ function GemBlox(color, posX, posY) {
 					if(tileMap.getGrid()[tmpY-1][tmpX].type.isAllowed == true)
 						tmpY = i;
 				break;
-		}
-		
-		this.SetPosition(tmpX, tmpY);
+			}
 
-		if(tileMap.getGrid()[tmpY][tmpX].type == this.color.tile_to_reach) 
-			tileMap.getGrid()[tmpY][tmpX].type = this.color.tile_reached;
-		else {
-			this.previousTile = tileMap.getGrid()[tmpY][tmpX].type;
-			tileMap.getGrid()[tmpY][tmpX].type = e_TileType.BLOCK;
-		}
-	};
+			this.SetPosition(tmpX, tmpY);
+
+			if(tileMap.getGrid()[tmpY][tmpX].type == this.color.tile_to_reach) 
+				tileMap.getGrid()[tmpY][tmpX].type = this.color.tile_reached;
+			else {
+				this.previousTile = tileMap.getGrid()[tmpY][tmpX].type;
+				tileMap.getGrid()[tmpY][tmpX].type = e_TileType.BLOCK;
+			}
+	}
 }

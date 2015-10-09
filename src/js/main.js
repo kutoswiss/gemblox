@@ -38,20 +38,20 @@ var gameState = gameState_e.MENU_MAIN;
 /**
  * @brief Function to preload assets
  */
-function preload() {
-	game.load.image(e_TileType.EMPTY.key,		'assets/img/pb_tile_empty.png');
-	game.load.image(e_TileType.ROCK.key, 		'assets/img/pb_tile_rock.png');
-	game.load.image(e_TileType.FLAKE.key, 		'assets/img/pb_tile_flake.png');
+ function preload() {
+ 	game.load.image(e_TileType.EMPTY.key,		'assets/img/pb_tile_empty.png');
+ 	game.load.image(e_TileType.ROCK.key, 		'assets/img/pb_tile_rock.png');
+ 	game.load.image(e_TileType.FLAKE.key, 		'assets/img/pb_tile_flake.png');
 
-	game.load.image(e_TileType.GB_RED.key, 		'assets/img/tile_gb_red.png');
-	game.load.image(e_TileType.GB_BLUE.key, 	'assets/img/tile_gb_blue.png');
-	game.load.image(e_TileType.GB_GREEN.key, 	'assets/img/tile_gb_green.png');
-	game.load.image(e_TileType.GB_YELLOW.key, 	'assets/img/tile_gb_yellow.png');
+ 	game.load.image(e_TileType.GB_RED.key, 		'assets/img/tile_gb_red.png');
+ 	game.load.image(e_TileType.GB_BLUE.key, 	'assets/img/tile_gb_blue.png');
+ 	game.load.image(e_TileType.GB_GREEN.key, 	'assets/img/tile_gb_green.png');
+ 	game.load.image(e_TileType.GB_YELLOW.key, 	'assets/img/tile_gb_yellow.png');
 
-	game.load.image(e_GemBloxColor.RED.key, 	'assets/img/gem_blox_red.png');
-	game.load.image(e_GemBloxColor.BLUE.key, 	'assets/img/gem_blox_blue.png');
-	game.load.image(e_GemBloxColor.GREEN.key, 	'assets/img/gem_blox_green.png');
-	game.load.image(e_GemBloxColor.YELLOW.key, 	'assets/img/gem_blox_yellow.png');
+ 	game.load.image(e_GemBloxColor.RED.key, 	'assets/img/gem_blox_red.png');
+ 	game.load.image(e_GemBloxColor.BLUE.key, 	'assets/img/gem_blox_blue.png');
+ 	game.load.image(e_GemBloxColor.GREEN.key, 	'assets/img/gem_blox_green.png');
+ 	game.load.image(e_GemBloxColor.YELLOW.key, 	'assets/img/gem_blox_yellow.png');
 
 
 	// TODO: Chapters and stages MUST be dynamic !!!
@@ -59,25 +59,25 @@ function preload() {
 	for(var chapter = 1; chapter <= NB_CHAPTERS; chapter++)
 		for(var stage = 1; stage <= NB_STAGES; stage++)
 			game.load.text('chapter_'+ twoDigits(chapter) +'_stage_'+ twoDigits(stage), 'assets/levels/chapter_'+ twoDigits(chapter) +'/stage_'+ twoDigits(stage) +'.json');
-}
+	}
 
 /**
  * @brief Function to create assets
  */
-function create() {
-	if (game.device.desktop) {
-		game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-		game.scale.minWidth = GAME_WIDTH / 2;
-		game.scale.minHeight = GAME_HEIGHT / 2;
-		game.scale.maxWidth = GAME_WIDTH;
-		game.scale.maxHeight = GAME_HEIGHT;
-		game.scale.pageAlignHorizontally = true;
-		game.scale.pageAlignVertically = true;
-		game.scale.setScreenSize(true);
-	} else {
-		game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-		game.scale.minWidth = GAME_WIDTH/2;
-		game.scale.minHeight = GAME_HEIGHT/2;
+ function create() {
+ 	if (game.device.desktop) {
+ 		game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+ 		game.scale.minWidth = GAME_WIDTH / 2;
+ 		game.scale.minHeight = GAME_HEIGHT / 2;
+ 		game.scale.maxWidth = GAME_WIDTH;
+ 		game.scale.maxHeight = GAME_HEIGHT;
+ 		game.scale.pageAlignHorizontally = true;
+ 		game.scale.pageAlignVertically = true;
+ 		game.scale.setScreenSize(true);
+ 	} else {
+ 		game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+ 		game.scale.minWidth = GAME_WIDTH/2;
+ 		game.scale.minHeight = GAME_HEIGHT/2;
 		game.scale.maxWidth = 2048; // You can change this to GAME_WIDTH*2.5 if needed
 		game.scale.maxHeight = 1228; // Make sure these values are proportional to the GAME_WIDTH and GAME_HEIGHT
 		game.scale.pageAlignHorizontally = true;
@@ -96,48 +96,48 @@ function create() {
 /**
  * @brief Function to update the game state (game loop)
  */
-function update() {
-	switch(gameState) {
-		case gameState_e.IN_GAME:
+ function update() {
+ 	switch(gameState) {
+ 		case gameState_e.IN_GAME:
 			// Update all blox's positions
 			for(var i = 0; i < gemBloxs.length; i++) {
 				gemBloxs[i].sprite.x = gemBloxs[i].position.x * TILE_SIZE;
 				gemBloxs[i].sprite.y = gemBloxs[i].position.y * TILE_SIZE;
 			}
 			break;
+		}
 	}
-}
 
 /**
  * @brief Function to check if the game is complete
  */
-function isGameOver() {
-	if(countCorrectBlox() == 2)
-		alert("You win !");
-}
+ function isGameOver() {
+ 	if(countCorrectBlox() == 2)
+ 		alert("You win !");
+ }
 
 /**
  * @brief Function to count how many blox is on the correct tile
  */
-function countCorrectBlox() {
-	var correct = 0;
-	for(var y = 0; y < tileMap.getHeight(); y++) {
-		for(var x = 0; x < tileMap.getWidth(); x++) {
-			if((tileMap.getGrid()[y][x].type == e_TileType.GB_RED_OK) || (tileMap.getGrid()[y][x].type == e_TileType.GB_BLUE_OK) ||
-				(tileMap.getGrid()[y][x].type == e_TileType.GB_GREEN_OK) || (tileMap.getGrid()[y][x].type == e_TileType.GB_YELLOW_OK)) {
-				correct++;
-			}
-		}
-	}
-	return correct;
+ function countCorrectBlox() {
+ 	var correct = 0;
+ 	for(var y = 0; y < tileMap.getHeight(); y++) {
+ 		for(var x = 0; x < tileMap.getWidth(); x++) {
+ 			if((tileMap.getGrid()[y][x].type == e_TileType.GB_RED_OK) || (tileMap.getGrid()[y][x].type == e_TileType.GB_BLUE_OK) ||
+ 				(tileMap.getGrid()[y][x].type == e_TileType.GB_GREEN_OK) || (tileMap.getGrid()[y][x].type == e_TileType.GB_YELLOW_OK)) {
+ 				correct++;
+ 		}
+ 	}
+ }
+ return correct;
 }
 
 /**
  * @brief Function to convert a number into 2 digits
  */
-function twoDigits(num) {
-	(String(num).length < 2) ? num = String("0" + num) :  num = String(num);
-	return num;		
-}
+ function twoDigits(num) {
+ 	(String(num).length < 2) ? num = String("0" + num) :  num = String(num);
+ 	return num;		
+ }
 
 
