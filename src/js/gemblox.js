@@ -21,14 +21,17 @@ gemBloxArray[3] = e_GemBloxColor.YELLOW;
 
 var GemBlox = (function(){
 	// -----------------------------------------------------------
+	// --- Constants ---------------------------------------------
+	// -----------------------------------------------------------
+	var VELOCITY = 700;
+
+	// -----------------------------------------------------------
 	// --- Fields ------------------------------------------------
 	// -----------------------------------------------------------
 	var color;
-	var previousTile;
 	var mouseUp;
 	var mouseDown;
 	this.direction;
-	this.position;
 	this.sprite;
 
 	// -----------------------------------------------------------
@@ -36,15 +39,23 @@ var GemBlox = (function(){
 	// -----------------------------------------------------------
 	var GemBlox = function(p_color, p_x, p_y) {
 		color = p_color;
-		this.position = {x: p_x, y: p_y};
 		mouseUp = {x: 0, y: 0};
 		mouseDown = {x: 0, y: 0};
 		this.direction = eDirection.NONE;
 
-		this.sprite = game.add.sprite(this.position.x, this.position.y, color.key);
+		this.sprite = game.add.sprite(p_x, p_y, color.key);
 		this.sprite.inputEnabled = true;
 		this.sprite.events.onInputDown.add(onMouseDown, this);
 		this.sprite.events.onInputUp.add(onMouseUp, this);
+		this.sprite.x = (p_x + 0.5) * TILE_SIZE;
+		this.sprite.y = (p_y + 0.5) * TILE_SIZE;
+		
+		game.physics.p2.enable(this.sprite);
+		this.sprite.body.setZeroDamping();
+		this.sprite.body.fixedRotation = true;
+		this.sprite.body.onBeginContact.add(onHitHandler, this);
+
+		//this.sprite.body.setRectangle(this.sprite.width * 0.8, this.sprite.height * 0.8);
 	}
 
 	var onMouseDown = function() {
@@ -65,59 +76,35 @@ var GemBlox = (function(){
 			this.direction = (mouseUp.y > mouseDown.y) ? eDirection.DOWN : eDirection.UP;
 	}
 
-	var isThereABlox = function(p_x, p_y) {
-		var result = false;
-		for(var i = 0; (i < gemBloxs.length) && (result == false); i++) 
-			result = ((gemBloxs[i].position.x == p_x) && (gemBloxs[i].position.y == p_y)) ? true : false;
-		return result;
+	var onHitHandler = function(body, bodyB, shapeA, shapeB, equation) {
+		this.sprite.body.setZeroVelocity();
+		this.direction = eDirection.NONE;
 	}
 
 	// -----------------------------------------------------------
 	// --- Public functions --------------------------------------
 	// -----------------------------------------------------------
 	GemBlox.prototype = {
-		setPosition: function(p_x, p_y) {
-			this.position.x = p_x;
-			this.position.y = p_y;
-		},
-
 		update: function() {
-			var tmpX = this.position.x;
-			var tmpY = this.position.y;
+			this.sprite.body.setZeroVelocity();
 
 			switch(this.direction) {
 				case eDirection.UP:
-					if(((tmpY-1) >= 0) && (!isThereABlox(tmpX, tmpY-1)) && (tileMap.getGrid()[tmpY-1][tmpX].getType().isAllowed == true))
-						this.position.y--;
-					else
-						this.direction = eDirection.NONE;
+					this.sprite.body.moveUp(VELOCITY);
 					break;
 
 				case eDirection.DOWN:
-					if(((tmpY+1) < tileMap.getHeight()) && (!isThereABlox(tmpX, tmpY+1)) &&(tileMap.getGrid()[tmpY+1][tmpX].getType().isAllowed == true))
-						this.position.y++;
-					else
-						this.direction = eDirection.NONE;
+					this.sprite.body.moveDown(VELOCITY);
 					break;
 
 				case eDirection.LEFT:
-					if(((tmpX-1) >= 0) && (!isThereABlox(tmpX-1, tmpY)) && (tileMap.getGrid()[tmpY][tmpX-1].getType().isAllowed == true))
-						this.position.x--;
-					else
-						this.direction = eDirection.NONE;
+					this.sprite.body.moveLeft(VELOCITY);
 					break;
 
 				case eDirection.RIGHT:
-					if(((tmpX+1) < tileMap.getWidth()) && (!isThereABlox(tmpX+1, tmpY)) && (tileMap.getGrid()[tmpY][tmpX+1].getType().isAllowed == true))
-						this.position.x++;
-					else
-						this.direction = eDirection.NONE;
+					this.sprite.body.moveRight(VELOCITY);
 					break;
-
 			}
-			
-			this.sprite.x = this.position.x * TILE_SIZE;
-			this.sprite.y = this.position.y * TILE_SIZE;
 		}
 	};
 

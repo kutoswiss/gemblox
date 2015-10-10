@@ -23,13 +23,12 @@ var gameState_e =  {
 	IN_GAME: 1.0
 };
 
-var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update});
+var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
 var tileMap; // Object
 var gemBloxs; // Object
 var menu; // Object
 var chapters; // Object
 var gameState = gameState_e.MENU_MAIN;
-
 
 // -----------------------------------------------------------
 // --- Functions ---------------------------------------------
@@ -89,6 +88,9 @@ var gameState = gameState_e.MENU_MAIN;
 		game.scale.setScreenSize(true);
 	}
 
+	game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.defaultRestitution = 0.8;
+
 	menu = new Menu();
 	menu.show();
 }
@@ -147,6 +149,10 @@ var gameState = gameState_e.MENU_MAIN;
  function twoDigits(num) {
  	(String(num).length < 2) ? num = String("0" + num) :  num = String(num);
  	return num;		
+ }
+
+ function render() {
+ 	// Debug only
  }
 
 
