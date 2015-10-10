@@ -36,12 +36,11 @@ var Tile = (function(){
 		this.type = p_type;
 		this.sprite = game.add.sprite(p_x * TILE_SIZE, p_y * TILE_SIZE, this.type.key);	
 		this.sprite.loadTexture(this.type.key);
+		game.physics.ninja.enableTile(this.sprite, this.sprite.frame);
 
 		if(this.type.isAllowed == false) {
-			game.physics.ninja.enableTile(this.sprite, this.sprite.frame);
 			tileObstacles.push(this.sprite);
 		}
-		
 	}
 
 	// -----------------------------------------------------------
