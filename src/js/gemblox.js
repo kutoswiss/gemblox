@@ -19,119 +19,107 @@ gemBloxArray[1] = e_GemBloxColor.BLUE;
 gemBloxArray[2] = e_GemBloxColor.GREEN;
 gemBloxArray[3] = e_GemBloxColor.YELLOW;
 
-var GemBlox = function(p_color, posX, posY) {
-
-	
-	// These lines are not working :(, dunno why
-	/*this.color = e_GemBloxColor.RED;
-	this.position = {x: 0, y: 0};
+var GemBlox = (function(){
+	// -----------------------------------------------------------
+	// --- Fields ------------------------------------------------
+	// -----------------------------------------------------------
+	var color;
+	var previousTile;
+	var mouseUp;
+	var mouseDown;
+	this.direction;
+	this.position;
 	this.sprite;
 
-	this.setPosition(posX, posY);
-	this.setColor(p_color);*/
+	// -----------------------------------------------------------
+	// --- Private functions -------------------------------------
+	// -----------------------------------------------------------
+	var GemBlox = function(p_color, p_x, p_y) {
+		color = p_color;
+		this.position = {x: p_x, y: p_y};
+		mouseUp = {x: 0, y: 0};
+		mouseDown = {x: 0, y: 0};
+		this.direction = eDirection.NONE;
 
-	this.color = p_color;
-	this.position = {x: posX, y: posY};
-
-	this.sprite = game.add.sprite(posX, posY, this.color.key);
-	this.sprite.x = posX * TILE_SIZE;
-	this.sprite.y = posY * TILE_SIZE;
-
-	this.previousTile = tileMap.getGrid()[posY][posX].type;
-	tileMap.getGrid()[posY][posX].type = e_TileType.BLOCK;
-
-	this.sprite.inputEnabled = true;
-	this.sprite.events.onInputDown.add(block_onMouseDown, this);
-	this.sprite.events.onInputUp.add(block_onMouseUp, this);
-
-	this.direction;
-	this.mouseDown = {x: 0, y: 0};
-	this.mouseUp = {x: 0, y: 0};
-
-	function block_onMouseDown() {
-		this.mouseDown.x = game.input.activePointer.x;
-		this.mouseDown.y = game.input.activePointer.y;
+		this.sprite = game.add.sprite(this.position.x, this.position.y, color.key);
+		this.sprite.inputEnabled = true;
+		this.sprite.events.onInputDown.add(onMouseDown, this);
+		this.sprite.events.onInputUp.add(onMouseUp, this);
 	}
 
-	function block_onMouseUp() {
-		this.mouseUp.x = game.input.activePointer.x;
-		this.mouseUp.y = game.input.activePointer.y;
+	var onMouseDown = function() {
+		mouseDown.x = game.input.activePointer.x;
+		mouseDown.y = game.input.activePointer.y;
+	}
 
-		var deltaX = Math.abs(this.mouseUp.x - this.mouseDown.x);
-		var deltaY = Math.abs(this.mouseUp.y - this.mouseDown.y);
+	var onMouseUp = function() {
+		mouseUp.x = game.input.activePointer.x;
+		mouseUp.y = game.input.activePointer.y;
+
+		var deltaX = Math.abs(mouseUp.x - mouseDown.x);
+		var deltaY = Math.abs(mouseUp.y - mouseDown.y);
 
 		if(deltaX > deltaY)
-			this.direction = (this.mouseUp.x > this.mouseDown.x) ? eDirection.RIGHT : eDirection.LEFT;
+			this.direction = (mouseUp.x > mouseDown.x) ? eDirection.RIGHT : eDirection.LEFT;
 		else
-			this.direction = (this.mouseUp.y > this.mouseDown.y) ? eDirection.DOWN : eDirection.UP;
-
-		this.move(this.direction);
+			this.direction = (mouseUp.y > mouseDown.y) ? eDirection.DOWN : eDirection.UP;
 	}
 
-	this.setColor = function(p_color) {
-		this.color = p_color;
-		this.sprite = game.add.sprite(this.position.x, this.position.y, this.color.key);
+	var isThereABlox = function(p_x, p_y) {
+		var result = false;
+		for(var i = 0; (i < gemBloxs.length) && (result == false); i++) 
+			result = ((gemBloxs[i].position.x == p_x) && (gemBloxs[i].position.y == p_y)) ? true : false;
+		return result;
 	}
 
-	this.setPosition = function(x, y) {
-		this.position.x = x;
-		this.position.y = y;
-	}
+	// -----------------------------------------------------------
+	// --- Public functions --------------------------------------
+	// -----------------------------------------------------------
+	GemBlox.prototype = {
+		setPosition: function(p_x, p_y) {
+			this.position.x = p_x;
+			this.position.y = p_y;
+		},
 
-	/**
-	 * @brief Function to move the gemblox
-	 * @param Direction of the gemblox (direction enum type)
-	 */
-	this.move = function(direction) {
-		var tmpX = this.position.x;
-		var tmpY = this.position.y;
+		update: function() {
+			var tmpX = this.position.x;
+			var tmpY = this.position.y;
 
-		if(tileMap.getGrid()[tmpY][tmpX].type == this.color.tile_reached)
-			tileMap.getGrid()[tmpY][tmpX].type = this.color.tile_to_reach;	
-		else
-			tileMap.getGrid()[tmpY][tmpX].type = this.previousTile;
+			switch(this.direction) {
+				case eDirection.UP:
+					if(((tmpY-1) >= 0) && (!isThereABlox(tmpX, tmpY-1)) && (tileMap.getGrid()[tmpY-1][tmpX].getType().isAllowed == true))
+						this.position.y--;
+					else
+						this.direction = eDirection.NONE;
+					break;
 
-		switch(this.direction) {
-			case eDirection.RIGHT:
-			for(var i = tmpX; i < tileMap.getWidth(); i++)
-				if(tileMap.getGrid()[tmpY][tmpX+1].type.isAllowed == true)
-					tmpX = i;
-				break;
+				case eDirection.DOWN:
+					if(((tmpY+1) < tileMap.getHeight()) && (!isThereABlox(tmpX, tmpY+1)) &&(tileMap.getGrid()[tmpY+1][tmpX].getType().isAllowed == true))
+						this.position.y++;
+					else
+						this.direction = eDirection.NONE;
+					break;
 
-			case eDirection.LEFT:
-				for(var i = tmpX; i >= 0; i--)
-					if(tileMap.getGrid()[tmpY][tmpX-1].type.isAllowed == true)
-						tmpX = i;
-				break;
+				case eDirection.LEFT:
+					if(((tmpX-1) >= 0) && (!isThereABlox(tmpX-1, tmpY)) && (tileMap.getGrid()[tmpY][tmpX-1].getType().isAllowed == true))
+						this.position.x--;
+					else
+						this.direction = eDirection.NONE;
+					break;
 
-			case eDirection.DOWN:
-				for(var i = tmpY; i < tileMap.getHeight(); i++)
-					if(tileMap.getGrid()[tmpY+1][tmpX].type.isAllowed == true)
-						tmpY = i;
-				break;
+				case eDirection.RIGHT:
+					if(((tmpX+1) < tileMap.getWidth()) && (!isThereABlox(tmpX+1, tmpY)) && (tileMap.getGrid()[tmpY][tmpX+1].getType().isAllowed == true))
+						this.position.x++;
+					else
+						this.direction = eDirection.NONE;
+					break;
 
-			case eDirection.UP:
-				for(var i = tmpY; i >= 0; i--)
-					if(tileMap.getGrid()[tmpY-1][tmpX].type.isAllowed == true)
-						tmpY = i;
-				break;
+			}
+			
+			this.sprite.x = this.position.x * TILE_SIZE;
+			this.sprite.y = this.position.y * TILE_SIZE;
 		}
+	};
 
-		this.setPosition(tmpX, tmpY);
-
-		if(tileMap.getGrid()[tmpY][tmpX].type == this.color.tile_to_reach) 
-			tileMap.getGrid()[tmpY][tmpX].type = this.color.tile_reached;
-		else {
-			this.previousTile = tileMap.getGrid()[tmpY][tmpX].type;
-			tileMap.getGrid()[tmpY][tmpX].type = e_TileType.BLOCK;
-		}
-	}
-
-	/**
-	 * @brief Function to update the gemblox position visually
-	 */
-	this.update = function() {
-		this.sprite.x = this.position.x * TILE_SIZE;
-		this.sprite.y = this.position.y * TILE_SIZE;
-	}
-}
+	return GemBlox;
+}());

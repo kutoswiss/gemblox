@@ -3,7 +3,7 @@ var Chapters = (function(){
 	// --- Fields ------------------------------------------------
 	// -----------------------------------------------------------
 	var amountChapter;
-	var btnChapters;
+	var btnsChapter; 
 
 	// -----------------------------------------------------------
 	// --- Private functions -------------------------------------
@@ -14,7 +14,7 @@ var Chapters = (function(){
 	 */
 	var Chapters = function(p_nbChapter) {
 		amountChapter = p_nbChapter;
-		btnChapters = new Array(amountChapter);
+		btnsChapter = new Array(amountChapter);
 	}
 
 	/**
@@ -22,10 +22,10 @@ var Chapters = (function(){
 	 */
 	var btnChapterOnClick = function() {
 		for(var i = 1; i <= amountChapter; i++)
-			btnChapters[i].destroy();
+			btnsChapter[i].destroy();
 
 		tileMap = new TileMap(5, 8);
-		tileMap.LoadMap(1, this.id);
+		tileMap.load(1, this.id);
 	}
 
 	// -----------------------------------------------------------
@@ -40,10 +40,10 @@ var Chapters = (function(){
 				var text = "Chapter " + i;
 				var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
 
-	    		btnChapters[i] = game.add.text(game.world.centerX, 100 * i, text, style);
-	    		btnChapters[i].anchor.set(0.5);
-	    		btnChapters[i].inputEnabled = true;
-				btnChapters[i].events.onInputUp.add(btnChapterOnClick, {parent: this, id: i});
+	    		btnsChapter[i] = game.add.text(game.world.centerX, 100 * i, text, style);
+	    		btnsChapter[i].anchor.set(0.5);
+	    		btnsChapter[i].inputEnabled = true;
+				btnsChapter[i].events.onInputUp.add(btnChapterOnClick, {parent: this, id: i});
 			}
 		}
 	};

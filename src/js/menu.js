@@ -11,7 +11,7 @@ var Menu = (function(){
 	/**
 	 * @brief Constructor
 	 */
-	var Menu = function(p_name) {
+	var Menu = function() {
 		style = { font: "65px Arial", fill: "#ff0044", align: "center" };
 	}
 

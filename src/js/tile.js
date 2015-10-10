@@ -21,21 +21,44 @@ var e_TileType = {
 	BLOCK: 		{key: '',				isAllowed: false}
 };
 
-var Tile = function() {
+var Tile = (function(){
+	// -----------------------------------------------------------
+	// --- Fields ------------------------------------------------
+	// -----------------------------------------------------------
 	this.type;
-	this.sprite;
-	this.position = {x: 0, y: 0};
+	var sprite;
+	var position;
 
-	this.SetType = function(tileType) {
-		this.type = tileType;
-		this.sprite = game.add.sprite(this.position.x, this.position.y, tileType.key);
+	// -----------------------------------------------------------
+	// --- Private functions -------------------------------------
+	// -----------------------------------------------------------
+	var Tile = function() {
+		position = {x: 0, y: 0};
+		this.type = e_TileType.EMPTY;
+		sprite = game.add.sprite(position.x, position.y, this.type.key);
+	}
+
+	// -----------------------------------------------------------
+	// --- Public functions --------------------------------------
+	// -----------------------------------------------------------
+	Tile.prototype = {
+		setPosition: function(p_x, p_y) {
+			position.x = p_x;
+			position.y = p_y;
+
+			sprite.x = position.x * TILE_SIZE;
+			sprite.y = position.y * TILE_SIZE;		
+		},
+
+		setType: function(p_tileType) {
+			this.type = p_tileType;
+			sprite.loadTexture(this.type.key);
+		},
+
+		getType: function() {
+			return this.type;
+		}
 	};
 
-	this.SetPosition = function(x, y) {
-		this.position.x = x;
-		this.position.y = y;
-
-		this.sprite.x = this.position.x * TILE_SIZE;
-		this.sprite.y = this.position.y * TILE_SIZE;
-	};
-}
+	return Tile;
+}());

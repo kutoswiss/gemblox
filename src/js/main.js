@@ -89,7 +89,7 @@ var gameState = gameState_e.MENU_MAIN;
 		game.scale.setScreenSize(true);
 	}
 
-	menu = new Menu("Gueule at");
+	menu = new Menu();
 	menu.show();
 }
 
@@ -135,10 +135,10 @@ var gameState = gameState_e.MENU_MAIN;
  			if((tileMap.getGrid()[y][x].type == e_TileType.GB_RED_OK) || (tileMap.getGrid()[y][x].type == e_TileType.GB_BLUE_OK) ||
  				(tileMap.getGrid()[y][x].type == e_TileType.GB_GREEN_OK) || (tileMap.getGrid()[y][x].type == e_TileType.GB_YELLOW_OK)) {
  				correct++;
+ 			}	
  		}
  	}
- }
- return correct;
+ 	return correct;
 }
 
 /**
