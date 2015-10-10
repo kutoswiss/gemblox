@@ -26,35 +26,28 @@ var Tile = (function(){
 	// --- Fields ------------------------------------------------
 	// -----------------------------------------------------------
 	this.type;
-	var sprite;
-	var position;
+	this.sprite;
 
 	// -----------------------------------------------------------
 	// --- Private functions -------------------------------------
 	// -----------------------------------------------------------
-	var Tile = function() {
-		position = {x: 0, y: 0};
-		this.type = e_TileType.EMPTY;
-		sprite = game.add.sprite(position.x, position.y, this.type.key);
+	var Tile = function(p_type, p_x, p_y) {
+		this.position = {x: 0, y: 0};
+		this.type = p_type;
+		this.sprite = game.add.sprite(p_x * TILE_SIZE, p_y * TILE_SIZE, this.type.key);	
+		this.sprite.loadTexture(this.type.key);
+
+		if(this.type.isAllowed == false) {
+			game.physics.ninja.enableTile(this.sprite, this.sprite.frame);
+			tileObstacles.push(this.sprite);
+		}
+		
 	}
 
 	// -----------------------------------------------------------
 	// --- Public functions --------------------------------------
 	// -----------------------------------------------------------
 	Tile.prototype = {
-		setPosition: function(p_x, p_y) {
-			position.x = p_x;
-			position.y = p_y;
-
-			sprite.x = position.x * TILE_SIZE;
-			sprite.y = position.y * TILE_SIZE;		
-		},
-
-		setType: function(p_tileType) {
-			this.type = p_tileType;
-			sprite.loadTexture(this.type.key);
-		},
-
 		getType: function() {
 			return this.type;
 		}

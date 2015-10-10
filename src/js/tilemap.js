@@ -40,28 +40,26 @@ var TileMap = (function(){
 
 			for(var h = 0; h < jsonHeight; h++) {
 				for(var w = 0; w < jsonWidth; w++) {
-					grid[h][w] = new Tile();
-
+					
 					// OPTIONAL TODO: Put all enum's value on an array and access it with tm[h][w]
 					// TODO: Values must be constants type
 					switch(tm[h][w]) {
 						case 0: 
-							grid[h][w].setType(e_TileType.EMPTY); 
+							grid[h][w] = new Tile(e_TileType.EMPTY, w, h);
 							break;
 
 						case 1: 
-							grid[h][w].setType(e_TileType.ROCK);
+							grid[h][w] = new Tile(e_TileType.ROCK, w, h);
 							break;
 
-						case 10: 
-							grid[h][w].setType(e_TileType.GB_GREEN); 
+						case 10:  
+							grid[h][w] = new Tile(e_TileType.GB_GREEN, w, h);
 							break;
 
 						case 11: 
-							grid[h][w].setType(e_TileType.GB_RED); 
+							grid[h][w] = new Tile(e_TileType.GB_RED, w, h);
 							break;
-					}
-					grid[h][w].setPosition(w, h);		
+					}	
 				}
 			}
 			
@@ -69,8 +67,7 @@ var TileMap = (function(){
 			gemBloxs = new Array(bloxAmount);
 			for(var i = 0; i < gemBloxs.length; i++) 
 				gemBloxs[i] = new GemBlox(gemBloxArray[json['blox'][i]['color']], json['blox'][i]['x'], json['blox'][i]['y']);
-			
-			
+
 			gameState = gameState_e.IN_GAME;
 		},
 

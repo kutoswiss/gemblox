@@ -23,7 +23,7 @@ var GemBlox = (function(){
 	// -----------------------------------------------------------
 	// --- Constants ---------------------------------------------
 	// -----------------------------------------------------------
-	var VELOCITY = 700;
+	var VELOCITY = 1000;
 
 	// -----------------------------------------------------------
 	// --- Fields ------------------------------------------------
@@ -47,15 +47,11 @@ var GemBlox = (function(){
 		this.sprite.inputEnabled = true;
 		this.sprite.events.onInputDown.add(onMouseDown, this);
 		this.sprite.events.onInputUp.add(onMouseUp, this);
-		this.sprite.x = (p_x + 0.5) * TILE_SIZE;
-		this.sprite.y = (p_y + 0.5) * TILE_SIZE;
+		this.sprite.x = p_x * TILE_SIZE;
+		this.sprite.y = p_y* TILE_SIZE;
 		
-		game.physics.p2.enable(this.sprite);
-		this.sprite.body.setZeroDamping();
-		this.sprite.body.fixedRotation = true;
-		this.sprite.body.onBeginContact.add(onHitHandler, this);
-
-		//this.sprite.body.setRectangle(this.sprite.width * 0.8, this.sprite.height * 0.8);
+		game.physics.ninja.enableAABB(this.sprite);
+		this.sprite.body.immovable = true;
 	}
 
 	var onMouseDown = function() {
@@ -104,6 +100,11 @@ var GemBlox = (function(){
 				case eDirection.RIGHT:
 					this.sprite.body.moveRight(VELOCITY);
 					break;
+			}
+
+			if(this.sprite.body.touching.left || this.sprite.body.touching.right || this.sprite.body.touching.up || this.sprite.body.touching.down) {
+				this.sprite.body.setZeroVelocity();
+				this.direction = eDirection.NONE;1
 			}
 		}
 	};

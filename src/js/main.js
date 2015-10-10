@@ -30,6 +30,8 @@ var menu; // Object
 var chapters; // Object
 var gameState = gameState_e.MENU_MAIN;
 
+var tileObstacles = new Array();
+
 // -----------------------------------------------------------
 // --- Functions ---------------------------------------------
 // -----------------------------------------------------------
@@ -38,7 +40,7 @@ var gameState = gameState_e.MENU_MAIN;
  * @brief Function to preload assets
  */
  function preload() {
- 	game.load.image(e_TileType.EMPTY.key,		'assets/img/pb_tile_empty.png');
+ 	game.load.image(e_TileType.EMPTY.key,		'assets/img/pb_tile_empty_dark.png');
  	game.load.image(e_TileType.ROCK.key, 		'assets/img/pb_tile_rock.png');
  	game.load.image(e_TileType.FLAKE.key, 		'assets/img/pb_tile_flake.png');
 
@@ -51,6 +53,8 @@ var gameState = gameState_e.MENU_MAIN;
  	game.load.image(e_GemBloxColor.BLUE.key, 	'assets/img/gem_blox_blue.png');
  	game.load.image(e_GemBloxColor.GREEN.key, 	'assets/img/gem_blox_green.png');
  	game.load.image(e_GemBloxColor.YELLOW.key, 	'assets/img/gem_blox_yellow.png');
+
+ 	game.time.advancedTiming = true;
 
 
 	// TODO: Chapters and stages MUST be dynamic !!!
@@ -88,8 +92,8 @@ var gameState = gameState_e.MENU_MAIN;
 		game.scale.setScreenSize(true);
 	}
 
-	game.physics.startSystem(Phaser.Physics.P2JS);
-    game.physics.p2.defaultRestitution = 0.8;
+	game.physics.startSystem(Phaser.Physics.NINJA);
+	game.physics.ninja.gravity = 0;
 
 	menu = new Menu();
 	menu.show();
@@ -101,6 +105,13 @@ var gameState = gameState_e.MENU_MAIN;
  function update() {
  	switch(gameState) {
  		case gameState_e.IN_GAME:
+ 			// TODO: Must be dynamic
+ 			game.physics.ninja.collide(gemBloxs[0].sprite, gemBloxs[1].sprite);
+
+ 			for(var i = 0; i < gemBloxs.length; i++)
+ 				for(var j = 0; j < tileObstacles.length; j++)
+ 					game.physics.ninja.collide(gemBloxs[i].sprite, tileObstacles[j]);
+ 			
 			// Update all blox's positions
 			for(var i = 0; i < gemBloxs.length; i++) 
 				gemBloxs[i].update();
@@ -152,7 +163,7 @@ var gameState = gameState_e.MENU_MAIN;
  }
 
  function render() {
- 	// Debug only
+ 	game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
  }
 
 
