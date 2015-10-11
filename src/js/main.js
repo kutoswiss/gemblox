@@ -23,7 +23,7 @@ var gameState_e =  {
 	IN_GAME: 1.0
 };
 
-var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render});
+var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
 var tileMap; // Object
 var gemBloxs; // Object
 var menu; // Object
@@ -33,9 +33,11 @@ var gameState = gameState_e.MENU_MAIN;
 var tileObstacles = new Array();
 var nbMovements = 0;
 
-var physics;
-
+// Fx objects
+var sounds;
 var fxCling;
+var fxBloxReached;
+var fxMainBgm;
 
 // -----------------------------------------------------------
 // --- Functions ---------------------------------------------
@@ -63,6 +65,8 @@ var fxCling;
  	game.load.image('btn_play', 'assets/img/button_play.png');
 
  	game.load.audio('cling', 'assets/sounds/cling_03.mp3');
+ 	game.load.audio('cling_reached', 'assets/sounds/cling_04.ogg');
+ 	game.load.audio('main_bgm', 'assets/sounds/main_bgm.mp3');
 
  	game.time.advancedTiming = true;
 
@@ -103,6 +107,12 @@ var fxCling;
 	}
 
 	fxCling = game.add.audio('cling');
+	fxBloxReached = game.add.audio('cling_reached');
+	fxMainBgm = game.add.audio('main_bgm');
+	fxMainBgm.loop = true;
+	fxMainBgm.play();
+
+
 	game.physics.startSystem(Phaser.Physics.NINJA);
 	game.physics.ninja.gravity = 0;
 	game.stage.backgroundColor = "#505050";

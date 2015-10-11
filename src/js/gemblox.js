@@ -115,15 +115,21 @@ var GemBlox = (function(){
 			if(this.direction == eDirection.NONE) {
 				switch(this.color) {
 					case e_GemBloxColor.RED:
-						if(tileMap.getGrid()[pos.y][pos.x].type == e_TileType.GB_RED)
+						if(tileMap.getGrid()[pos.y][pos.x].type == e_TileType.GB_RED){
+							if(this.isCorrect == false)
+								fxBloxReached.play();
 							this.isCorrect = true;
+						}
 						else
 							this.isCorrect = false;
 						break;
 
 					case e_GemBloxColor.GREEN:
-						if(tileMap.getGrid()[pos.y][pos.x].type == e_TileType.GB_GREEN)
+						if(tileMap.getGrid()[pos.y][pos.x].type == e_TileType.GB_GREEN) {
+							if(this.isCorrect == false)
+								fxBloxReached.play();
 							this.isCorrect = true;
+						}
 						else 
 							this.isCorrect = false;
 						break;
