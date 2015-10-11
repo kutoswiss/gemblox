@@ -57,23 +57,27 @@ var GemBlox = (function(){
 	}
 
 	var onMouseDown = function() {
-		mouseDown.x = game.input.activePointer.x;
-		mouseDown.y = game.input.activePointer.y;
+		if(this.direction == eDirection.NONE) {
+			mouseDown.x = game.input.activePointer.x;
+			mouseDown.y = game.input.activePointer.y;
+		}
 	}
 
 	var onMouseUp = function() {
-		mouseUp.x = game.input.activePointer.x;
-		mouseUp.y = game.input.activePointer.y;
+		if(this.direction == eDirection.NONE) {
+			mouseUp.x = game.input.activePointer.x;
+			mouseUp.y = game.input.activePointer.y;
 
-		var deltaX = Math.abs(mouseUp.x - mouseDown.x);
-		var deltaY = Math.abs(mouseUp.y - mouseDown.y);
+			var deltaX = Math.abs(mouseUp.x - mouseDown.x);
+			var deltaY = Math.abs(mouseUp.y - mouseDown.y);
 
-		if(deltaX > deltaY)
-			this.direction = (mouseUp.x > mouseDown.x) ? eDirection.RIGHT : eDirection.LEFT;
-		else
-			this.direction = (mouseUp.y > mouseDown.y) ? eDirection.DOWN : eDirection.UP;
+			if(deltaX > deltaY)
+				this.direction = (mouseUp.x > mouseDown.x) ? eDirection.RIGHT : eDirection.LEFT;
+			else
+				this.direction = (mouseUp.y > mouseDown.y) ? eDirection.DOWN : eDirection.UP;
 
-		nbMovements++;
+			nbMovements++;
+		}
 	}
 
 	// -----------------------------------------------------------
