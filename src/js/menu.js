@@ -3,6 +3,8 @@ var Menu = (function(){
 	// --- Fields ------------------------------------------------
 	// -----------------------------------------------------------
 	this.btnPlay;
+	this.btnOptions;
+	this.btnAbout;
 	this.logo;
 
 	// -----------------------------------------------------------
@@ -23,6 +25,14 @@ var Menu = (function(){
 		chapters.show();
 	}
 
+	var btnOptionsOnClick = function() {
+
+	}
+
+	var btnAboutOnClick = function() {
+		
+	}
+
 	// -----------------------------------------------------------
 	// --- Public functions --------------------------------------
 	// -----------------------------------------------------------
@@ -35,15 +45,29 @@ var Menu = (function(){
 			this.logo.anchor.set(0.5);
 			this.logo.loadTexture('logo');
 
-			this.btnPlay = game.add.sprite(game.world.centerX, 500, 'btn_play');	
+			this.btnPlay = game.add.sprite(game.world.centerX, 700, 'btn_play');	
 			this.btnPlay.anchor.set(0.5);
 			this.btnPlay.loadTexture('btn_play');
 			this.btnPlay.inputEnabled = true;
 			this.btnPlay.events.onInputUp.add(btnPlayOnClick, this);
+
+			this.btnOptions = game.add.sprite(game.world.centerX, 750, 'btn_options');	
+			this.btnOptions.anchor.set(0.5);
+			this.btnOptions.loadTexture('btn_options');
+			this.btnOptions.inputEnabled = true;
+			this.btnOptions.events.onInputUp.add(btnOptionsOnClick, this);
+
+			this.btnAbout = game.add.sprite(game.world.centerX, 800, 'btn_about');	
+			this.btnAbout.anchor.set(0.5);
+			this.btnAbout.loadTexture('btn_about');
+			this.btnAbout.inputEnabled = true;
+			this.btnAbout.events.onInputUp.add(btnAboutOnClick, this);
 		},
 
 		destroy: function() {
 			this.btnPlay.destroy();
+			this.btnOptions.destroy();
+			this.btnAbout.destroy();
 			this.logo.destroy();
 		}
 	};

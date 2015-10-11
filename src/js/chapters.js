@@ -4,7 +4,9 @@ var Chapters = (function(){
 	// -----------------------------------------------------------
 	var amountChapter;
 	var btnsChapter; 
-
+	var txtsChapter;
+	var style;
+	
 	// -----------------------------------------------------------
 	// --- Private functions -------------------------------------
 	// -----------------------------------------------------------
@@ -15,15 +17,19 @@ var Chapters = (function(){
 	var Chapters = function(p_nbChapter) {
 		amountChapter = p_nbChapter;
 		btnsChapter = new Array(amountChapter);
+		txtsChapter = new Array(amountChapter);
 		gameState = gameState_e.MENU_CHAPTERS;
+		style = { font: "32px Arial", fill: "#ff0044", align: "center" };
 	}
 
 	/**
 	 * @brief Delegate Button OnClick
 	 */
 	var btnChapterOnClick = function() {
-		for(var i = 1; i <= amountChapter; i++)
+		for(var i = 0; i < amountChapter; i++) {
 			btnsChapter[i].destroy();
+			txtsChapter[i].destroy();
+		}
 
 		tileMap = new TileMap(5, 8);
 		tileMap.load(1, this.id);
@@ -37,14 +43,20 @@ var Chapters = (function(){
 		 * @brief Function to show the chapters menu
 		 */
 		show: function() {
-			for(var i = 1; i <= amountChapter; i++) {
-				var text = "Stage " + i;
-				var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
+			var space = GAME_WIDTH / 6;
+			for(var i = 0; i < amountChapter; i++) {
+				var level = i+1;
+				var x = space * ((i % 5)+1);
+				var y = space * (Math.floor(i / 5) + 1);
 
-	    		btnsChapter[i] = game.add.text(game.world.centerX, 100 * i, text, style);
-	    		btnsChapter[i].anchor.set(0.5);
-	    		btnsChapter[i].inputEnabled = true;
-				btnsChapter[i].events.onInputUp.add(btnChapterOnClick, {parent: this, id: i});
+				btnsChapter[i] = game.add.sprite(x, y,  'btn_stage');	
+				btnsChapter[i].anchor.set(0.5);
+				btnsChapter[i].loadTexture('btn_stage');
+				btnsChapter[i].inputEnabled = true;
+				btnsChapter[i].events.onInputUp.add(btnChapterOnClick, {parent: this, id: level});
+
+				txtsChapter[i] = game.add.text(x, y, level, style);
+    			txtsChapter[i].anchor.set(0.5);
 			}
 		}
 	};

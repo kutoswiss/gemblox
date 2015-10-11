@@ -63,6 +63,10 @@ var fxMainBgm;
 
  	game.load.image('logo', 	'assets/img/logo.png');
  	game.load.image('btn_play', 'assets/img/button_play.png');
+ 	game.load.image('btn_options', 'assets/img/button_options.png');
+ 	game.load.image('btn_about', 'assets/img/button_about.png');
+ 	game.load.image('btn_stage', 	'assets/img/button_stage.png');
+
 
  	game.load.audio('cling', 'assets/sounds/cling_03.mp3');
  	game.load.audio('cling_reached', 'assets/sounds/cling_04.ogg');
