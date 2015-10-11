@@ -23,7 +23,7 @@ var gameState_e =  {
 	IN_GAME: 1.0
 };
 
-var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
+var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render});
 var tileMap; // Object
 var gemBloxs; // Object
 var menu; // Object
@@ -108,7 +108,7 @@ var physics;
  	switch(gameState) {
  		case gameState_e.IN_GAME:
  			// TODO: Must be dynamic
- 			game.physics.ninja.collide(gemBloxs[0].sprite, gemBloxs[1].sprite);
+ 			game.physics.ninja.collide(gemBloxs[0].sprite, gemBloxs[1].sprite, collideCallback);
 
  			for(var i = 0; i < gemBloxs.length; i++)
  				for(var j = 0; j < tileObstacles.length; j++)
@@ -129,6 +129,20 @@ var physics;
 			break;
 
 		default: break;
+	}
+}
+
+function collideCallback() {
+	for(var i = 0; i < gemBloxs.length; i++) {
+		var pos = gemBloxs[i].getTilePosition();
+
+		// Stop the blox
+		gemBloxs[i].direction = eDirection.NONE;
+		gemBloxs[i].sprite.body.setZeroVelocity();
+
+		// Repositioning correctly the blox on the tilemap
+		gemBloxs[i].sprite.body.x = (pos.x+0.5) * TILE_SIZE;
+		gemBloxs[i].sprite.body.y = (pos.y+0.5) * TILE_SIZE;
 	}
 }
 

@@ -51,6 +51,7 @@ var GemBlox = (function(){
 		this.sprite.y = p_y * TILE_SIZE;
 
 		game.physics.ninja.enableAABB(this.sprite);
+		this.sprite.immovable = true;
 	}
 
 	var onMouseDown = function() {
