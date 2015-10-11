@@ -77,9 +77,12 @@ var fxMainBgm;
 
 	// TODO: Chapters and stages MUST be dynamic !!!
 	// Load all chapters and stage
-	for(var chapter = 1; chapter <= NB_CHAPTERS; chapter++)
+	/*for(var chapter = 1; chapter <= NB_CHAPTERS; chapter++)
 		for(var stage = 1; stage <= NB_STAGES; stage++)
-			game.load.text('chapter_'+ twoDigits(chapter) +'_stage_'+ twoDigits(stage), 'assets/levels/chapter_'+ twoDigits(chapter) +'/stage_'+ twoDigits(stage) +'.json');
+			game.load.text('chapter_'+ twoDigits(chapter) +'_stage_'+ twoDigits(stage), 'assets/levels/chapter_'+ twoDigits(chapter) +'/stage_'+ twoDigits(stage) +'.json');*/
+
+	for(var stage = 1; stage <= NB_STAGES; stage++)
+		game.load.text('stage_'+ twoDigits(stage), 'assets/levels/stage_'+ twoDigits(stage) +'.json');
 	}
 
 /**
@@ -211,7 +214,8 @@ function bloxCollideHandler() {
  }
 
  function render() {
- 	game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
+ 	game.debug.text("Developement build - Version 1.0.6", 2, 14, "#00ff00");
+ 	game.debug.text("FPS: " + game.time.fps || '--', 2, 30, "#00ff00");   
  }
 
 

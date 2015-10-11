@@ -34,7 +34,7 @@ var TileMap = (function(){
 			var str_chapter = twoDigits(p_chapter);
 			var str_level = twoDigits(p_level);
 
-			var current_stage = game.cache.getText('chapter_'+ str_chapter +'_stage_' + str_level);
+			var current_stage = game.cache.getText('stage_' + str_level);
 			var json = JSON.parse(current_stage);
 			
 			var jsonWidth = json['width'];
@@ -75,7 +75,7 @@ var TileMap = (function(){
 
 			var text = "Nb. movements:" + nbMovements;
 			var style = { font: "15px Arial", fill: "#00ff00", align: "center" };
-			this.txtMovements = game.add.text(2, 28, text, style);
+			this.txtMovements = game.add.text(2, 35, text, style);
 		},
 
 		getGrid: function() {
