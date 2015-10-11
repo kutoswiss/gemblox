@@ -15,6 +15,7 @@ var Chapters = (function(){
 	var Chapters = function(p_nbChapter) {
 		amountChapter = p_nbChapter;
 		btnsChapter = new Array(amountChapter);
+		gameState = gameState_e.MENU_CHAPTERS;
 	}
 
 	/**
@@ -37,7 +38,7 @@ var Chapters = (function(){
 		 */
 		show: function() {
 			for(var i = 1; i <= amountChapter; i++) {
-				var text = "Chapter " + i;
+				var text = "Stage " + i;
 				var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
 
 	    		btnsChapter[i] = game.add.text(game.world.centerX, 100 * i, text, style);

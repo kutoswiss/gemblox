@@ -2,20 +2,23 @@ var TileMap = (function(){
 	// -----------------------------------------------------------
 	// --- Fields ------------------------------------------------
 	// -----------------------------------------------------------
-	var width;
-	var height;
+	this.width;
+	this.height;
 	var grid;
+	this.txtMovements;
 
 	// -----------------------------------------------------------
 	// --- Private functions -------------------------------------
 	// -----------------------------------------------------------
 	var TileMap = function(p_width, p_height) {
-		width = p_width;
-		height = p_height;
-		grid = new Array(height);
+		this.width = p_width;
+		this.height = p_height;
+		grid = new Array(this.height);
 
-		for(var y = 0; y < height; y++)
-			grid[y] = new Array(width);
+		for(var y = 0; y < this.height; y++)
+			grid[y] = new Array(this.width);
+
+		nbMovements = 0;
 	}
 
 	var twoDigits = function(num) {
@@ -69,6 +72,10 @@ var TileMap = (function(){
 				gemBloxs[i] = new GemBlox(gemBloxArray[json['blox'][i]['color']], json['blox'][i]['x'], json['blox'][i]['y']);
 
 			gameState = gameState_e.IN_GAME;
+
+			var text = "Nb. movements:" + nbMovements;
+			var style = { font: "15px Arial", fill: "#00ff00", align: "center" };
+			this.txtMovements = game.add.text(2, 28, text, style);
 		},
 
 		getGrid: function() {
@@ -76,11 +83,22 @@ var TileMap = (function(){
 		},
 
 		getWidth: function() {
-			return width;
+			return this.width;
 		},
 
 		getHeight: function() {
-			return height;
+			return this.height;
+		},
+
+		destroy: function() {
+			for(var h = 0; h < this.height; h++) 
+				for(var w = 0; w < this.width; w++) 
+					grid[h][w].sprite.destroy();
+
+			for(var i = 0; i < gemBloxs.length; i++)
+				gemBloxs[i].sprite.destroy();
+
+			this.txtMovements.destroy();
 		}
 	};
 

@@ -2,8 +2,8 @@ var Menu = (function(){
 	// -----------------------------------------------------------
 	// --- Fields ------------------------------------------------
 	// -----------------------------------------------------------
-	var btnPlay;
-	var style;
+	this.btnPlay;
+	this.logo;
 
 	// -----------------------------------------------------------
 	// --- Private functions -------------------------------------
@@ -12,21 +12,13 @@ var Menu = (function(){
 	 * @brief Constructor
 	 */
 	var Menu = function() {
-		style = { font: "65px Arial", fill: "#ff0044", align: "center" };
-	}
-
-	/**
-	 * @brief Function to destroy all buttons
-	 */
-	var destroyAllBtns = function() {
-		btnPlay.destroy();
 	}
 
 	/**
 	 * @brief Delegate Button Play OnClick
 	 */
 	var btnPlayOnClick = function() {
-		destroyAllBtns();
+		this.destroy();
 		chapters = new Chapters(2);
 		chapters.show();
 	}
@@ -39,10 +31,20 @@ var Menu = (function(){
 		 * @brief Function to show the menu
 		 */
 		show: function() {
-			btnPlay = game.add.text(game.world.centerX, 500, "Play", style);
-			btnPlay.anchor.set(0.5);
-			btnPlay.inputEnabled = true;
-			btnPlay.events.onInputUp.add(btnPlayOnClick, this);
+			this.logo = game.add.sprite(game.world.centerX, 300, 'logo');	
+			this.logo.anchor.set(0.5);
+			this.logo.loadTexture('logo');
+
+			this.btnPlay = game.add.sprite(game.world.centerX, 500, 'btn_play');	
+			this.btnPlay.anchor.set(0.5);
+			this.btnPlay.loadTexture('btn_play');
+			this.btnPlay.inputEnabled = true;
+			this.btnPlay.events.onInputUp.add(btnPlayOnClick, this);
+		},
+
+		destroy: function() {
+			this.btnPlay.destroy();
+			this.logo.destroy();
 		}
 	};
 

@@ -31,8 +31,11 @@ var chapters; // Object
 var gameState = gameState_e.MENU_MAIN;
 
 var tileObstacles = new Array();
+var nbMovements = 0;
 
 var physics;
+
+var fxCling;
 
 // -----------------------------------------------------------
 // --- Functions ---------------------------------------------
@@ -55,6 +58,11 @@ var physics;
  	game.load.image(e_GemBloxColor.BLUE.key, 	'assets/img/gem_blox_blue.png');
  	game.load.image(e_GemBloxColor.GREEN.key, 	'assets/img/gem_blox_green.png');
  	game.load.image(e_GemBloxColor.YELLOW.key, 	'assets/img/gem_blox_yellow.png');
+
+ 	game.load.image('logo', 	'assets/img/logo.png');
+ 	game.load.image('btn_play', 'assets/img/button_play.png');
+
+ 	game.load.audio('cling', 'assets/sounds/cling_03.mp3');
 
  	game.time.advancedTiming = true;
 
@@ -94,8 +102,10 @@ var physics;
 		game.scale.setScreenSize(true);
 	}
 
+	fxCling = game.add.audio('cling');
 	game.physics.startSystem(Phaser.Physics.NINJA);
 	game.physics.ninja.gravity = 0;
+	game.stage.backgroundColor = "#505050";
 
 	menu = new Menu();
 	menu.show();
@@ -108,15 +118,19 @@ var physics;
  	switch(gameState) {
  		case gameState_e.IN_GAME:
  			// TODO: Must be dynamic
- 			game.physics.ninja.collide(gemBloxs[0].sprite, gemBloxs[1].sprite, collideCallback);
+ 			game.physics.ninja.collide(gemBloxs[0].sprite, gemBloxs[1].sprite, bloxCollideHandler);
 
  			for(var i = 0; i < gemBloxs.length; i++)
  				for(var j = 0; j < tileObstacles.length; j++)
  					game.physics.ninja.collide(gemBloxs[i].sprite, tileObstacles[j]);
  			
 			// Update all blox's positions
-			for(var i = 0; i < gemBloxs.length; i++) 
+			for(var i = 0; i < gemBloxs.length; i++)
 				gemBloxs[i].update();
+			
+
+			tileMap.txtMovements.text = "Nb. movements:  " + nbMovements;
+			isGameOver();
 			break;
 
 		case gameState_e.MENU_MAIN:
@@ -132,7 +146,7 @@ var physics;
 	}
 }
 
-function collideCallback() {
+function bloxCollideHandler() {
 	for(var i = 0; i < gemBloxs.length; i++) {
 		var pos = gemBloxs[i].getTilePosition();
 
@@ -143,6 +157,8 @@ function collideCallback() {
 		// Repositioning correctly the blox on the tilemap
 		gemBloxs[i].sprite.body.x = (pos.x+0.5) * TILE_SIZE;
 		gemBloxs[i].sprite.body.y = (pos.y+0.5) * TILE_SIZE;
+
+		fxCling.play();
 	}
 }
 
@@ -150,8 +166,14 @@ function collideCallback() {
  * @brief Function to check if the game is complete
  */
  function isGameOver() {
- 	if(countCorrectBlox() == 2)
- 		alert("You win !");
+ 	if(countCorrectBlox() == 2) {
+ 		// Destroy the tilemap
+ 		tileMap.destroy();
+
+ 		// Back to chapters
+ 		chapters = new Chapters(2);
+		chapters.show();
+ 	}
  }
 
 /**
@@ -159,13 +181,9 @@ function collideCallback() {
  */
  function countCorrectBlox() {
  	var correct = 0;
- 	for(var y = 0; y < tileMap.getHeight(); y++) {
- 		for(var x = 0; x < tileMap.getWidth(); x++) {
- 			if((tileMap.getGrid()[y][x].type == e_TileType.GB_RED_OK) || (tileMap.getGrid()[y][x].type == e_TileType.GB_BLUE_OK) ||
- 				(tileMap.getGrid()[y][x].type == e_TileType.GB_GREEN_OK) || (tileMap.getGrid()[y][x].type == e_TileType.GB_YELLOW_OK)) {
- 				correct++;
- 			}	
- 		}
+ 	for(var i = 0; i < gemBloxs.length; i++) {
+ 		if(gemBloxs[i].isCorrect)
+ 			correct++;
  	}
  	return correct;
 }

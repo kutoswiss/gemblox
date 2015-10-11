@@ -28,22 +28,23 @@ var GemBlox = (function(){
 	// -----------------------------------------------------------
 	// --- Fields ------------------------------------------------
 	// -----------------------------------------------------------
-	var color;
+	this.color;
 	var mouseUp;
 	var mouseDown;
 	this.direction;
 	this.sprite;
+	this.isCorrect;
 
 	// -----------------------------------------------------------
 	// --- Private functions -------------------------------------
 	// -----------------------------------------------------------
 	var GemBlox = function(p_color, p_x, p_y) {
-		color = p_color;
+		this.color = p_color;
 		mouseUp = {x: 0, y: 0};
 		mouseDown = {x: 0, y: 0};
 		this.direction = eDirection.NONE;
 
-		this.sprite = game.add.sprite(p_x, p_y, color.key);
+		this.sprite = game.add.sprite(p_x, p_y, this.color.key);
 		this.sprite.inputEnabled = true;
 		this.sprite.events.onInputDown.add(onMouseDown, this);
 		this.sprite.events.onInputUp.add(onMouseUp, this);
@@ -52,6 +53,7 @@ var GemBlox = (function(){
 
 		game.physics.ninja.enableAABB(this.sprite);
 		this.sprite.immovable = true;
+		this.isCorrect = false;
 	}
 
 	var onMouseDown = function() {
@@ -70,6 +72,8 @@ var GemBlox = (function(){
 			this.direction = (mouseUp.x > mouseDown.x) ? eDirection.RIGHT : eDirection.LEFT;
 		else
 			this.direction = (mouseUp.y > mouseDown.y) ? eDirection.DOWN : eDirection.UP;
+
+		nbMovements++;
 	}
 
 	// -----------------------------------------------------------
@@ -104,7 +108,29 @@ var GemBlox = (function(){
 			if(this.sprite.body.touching.left || this.sprite.body.touching.right || this.sprite.body.touching.up || this.sprite.body.touching.down) {
 				this.sprite.body.setZeroVelocity();
 				this.direction = eDirection.NONE;
+				fxCling.play();
 			}
+
+			var pos = this.getTilePosition();
+			if(this.direction == eDirection.NONE) {
+				switch(this.color) {
+					case e_GemBloxColor.RED:
+						if(tileMap.getGrid()[pos.y][pos.x].type == e_TileType.GB_RED)
+							this.isCorrect = true;
+						else
+							this.isCorrect = false;
+						break;
+
+					case e_GemBloxColor.GREEN:
+						if(tileMap.getGrid()[pos.y][pos.x].type == e_TileType.GB_GREEN)
+							this.isCorrect = true;
+						else 
+							this.isCorrect = false;
+						break;
+				}
+			}
+
+
 		}
 	};
 
