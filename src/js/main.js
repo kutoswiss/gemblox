@@ -10,7 +10,7 @@
 var GAME_WIDTH = 640;
 var GAME_HEIGHT = 1024;
 var NB_CHAPTERS = 1; // Must be dynamic later
-var NB_STAGES = 2; // Must be dynamic later
+var NB_STAGES = 3; // Must be dynamic later
 var SCALING = 1;
 
 // -----------------------------------------------------------
@@ -126,6 +126,8 @@ var fxMainBgm;
 
 	menu = new Menu();
 	menu.show();
+
+	getCount("assets/levels/");
 }
 
 /**
@@ -134,8 +136,10 @@ var fxMainBgm;
  function update() {
  	switch(gameState) {
  		case gameState_e.IN_GAME:
- 			// TODO: Must be dynamic
- 			game.physics.ninja.collide(gemBloxs[0].sprite, gemBloxs[1].sprite, bloxCollideHandler);
+ 			for(var i = 0; i < gemBloxs.length; i++)
+ 				for(var j = 0; j < gemBloxs.length; j++)	
+ 					if(j!=i)
+ 						game.physics.ninja.collide(gemBloxs[i].sprite, gemBloxs[j].sprite, bloxCollideHandler);
 
  			for(var i = 0; i < gemBloxs.length; i++)
  				for(var j = 0; j < tileObstacles.length; j++)
@@ -183,12 +187,12 @@ function bloxCollideHandler() {
  * @brief Function to check if the game is complete
  */
  function isGameOver() {
- 	if(countCorrectBlox() == 2) {
+ 	if(countCorrectBlox() == tileMap.exceptedBlox) {
  		// Destroy the tilemap
  		tileMap.destroy();
 
  		// Back to chapters
- 		chapters = new Chapters(2);
+ 		chapters = new Chapters(NB_STAGES);
 		chapters.show();
  	}
  }
@@ -217,5 +221,16 @@ function bloxCollideHandler() {
  	game.debug.text("Developement build - Version 1.0.6", 2, 14, "#00ff00");
  	game.debug.text("FPS: " + game.time.fps || '--', 2, 30, "#00ff00");   
  }
+
+
+ function getCount(foldername) {
+    $.ajax({
+	    url: "assets/levels/",
+	    success: function (data) {
+	        var image_count = $(data).length(); 
+	        alert(image_count);    
+	    }
+	});
+  }
 
 

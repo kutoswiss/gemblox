@@ -137,6 +137,26 @@ var GemBlox = (function(){
 						else 
 							this.isCorrect = false;
 						break;
+
+					case e_GemBloxColor.BLUE:
+						if(tileMap.getGrid()[pos.y][pos.x].type == e_TileType.GB_BLUE) {
+							if(this.isCorrect == false)
+								fxBloxReached.play();
+							this.isCorrect = true;
+						}
+						else 
+							this.isCorrect = false;
+						break;
+
+					case e_GemBloxColor.YELLOW:
+						if(tileMap.getGrid()[pos.y][pos.x].type == e_TileType.GB_YELLOW) {
+							if(this.isCorrect == false)
+								fxBloxReached.play();
+							this.isCorrect = true;
+						}
+						else 
+							this.isCorrect = false;
+						break;
 				}
 			}
 

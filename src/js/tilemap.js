@@ -6,6 +6,7 @@ var TileMap = (function(){
 	this.height;
 	var grid;
 	this.txtMovements;
+	this.exceptedBlox;
 
 	// -----------------------------------------------------------
 	// --- Private functions -------------------------------------
@@ -19,6 +20,7 @@ var TileMap = (function(){
 			grid[y] = new Array(this.width);
 
 		nbMovements = 0;
+		this.exceptedBlox = 0;
 	}
 
 	var twoDigits = function(num) {
@@ -56,11 +58,19 @@ var TileMap = (function(){
 							break;
 
 						case 10:  
-							grid[h][w] = new Tile(e_TileType.GB_GREEN, w, h);
+							grid[h][w] = new Tile(e_TileType.GB_RED, w, h);
 							break;
 
 						case 11: 
-							grid[h][w] = new Tile(e_TileType.GB_RED, w, h);
+							grid[h][w] = new Tile(e_TileType.GB_BLUE, w, h);
+							break;
+
+						case 12:
+							grid[h][w] = new Tile(e_TileType.GB_GREEN, w, h);
+							break;
+
+						case 13:
+							grid[h][w] = new Tile(e_TileType.GB_YELLOW, w, h);
 							break;
 					}	
 				}
@@ -76,6 +86,7 @@ var TileMap = (function(){
 			var text = "Nb. movements:" + nbMovements;
 			var style = { font: "15px Arial", fill: "#00ff00", align: "center" };
 			this.txtMovements = game.add.text(2, 35, text, style);
+			this.exceptedBlox = bloxAmount;
 		},
 
 		getGrid: function() {

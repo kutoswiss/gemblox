@@ -21,7 +21,7 @@ var Menu = (function(){
 	 */
 	var btnPlayOnClick = function() {
 		this.destroy();
-		chapters = new Chapters(2);
+		chapters = new Chapters(NB_STAGES);
 		chapters.show();
 	}
 
