@@ -1,3 +1,9 @@
+/** ----------------------------------------------------------
+ * Project: GemBlox
+ * Author: Kris Rejas (kris0x00)
+ * Version: 0.5, 2015-10-09, Phaser edition
+ * -----------------------------------------------------------*/
+
 var TILE_SIZE = 128 * SCALING;
 
 var e_TileType = {

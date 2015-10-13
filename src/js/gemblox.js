@@ -1,3 +1,9 @@
+/** ----------------------------------------------------------
+ * Project: GemBlox
+ * Author: Kris Rejas (kris0x00)
+ * Version: 0.5, 2015-10-09, Phaser edition
+ * -----------------------------------------------------------*/
+
 var eDirection = {
 	NONE: 	0,
 	LEFT: 	1,
@@ -19,7 +25,11 @@ gemBloxArray[1] = e_GemBloxColor.BLUE;
 gemBloxArray[2] = e_GemBloxColor.GREEN;
 gemBloxArray[3] = e_GemBloxColor.YELLOW;
 
-var GemBlox = (function(){
+// -----------------------------------------------------------
+// --- GemBlox Class -----------------------------------------
+// -----------------------------------------------------------
+var GemBlox = (function() {
+
 	// -----------------------------------------------------------
 	// --- Constants ---------------------------------------------
 	// -----------------------------------------------------------
@@ -28,9 +38,9 @@ var GemBlox = (function(){
 	// -----------------------------------------------------------
 	// --- Fields ------------------------------------------------
 	// -----------------------------------------------------------
-	this.color;
 	var mouseUp;
 	var mouseDown;
+	this.color;
 	this.direction;
 	this.sprite;
 	this.isCorrect;
@@ -38,6 +48,13 @@ var GemBlox = (function(){
 	// -----------------------------------------------------------
 	// --- Private functions -------------------------------------
 	// -----------------------------------------------------------
+
+	/**
+	 * @brief Ctor
+	 * @param Color of the blox (e_GemBloxColor enum type)
+	 * @param Tile position x
+	 * @param Tile position y
+	 */
 	var GemBlox = function(p_color, p_x, p_y) {
 		this.color = p_color;
 		mouseUp = {x: 0, y: 0};
@@ -57,6 +74,9 @@ var GemBlox = (function(){
 		this.isCorrect = false;
 	}
 
+	/**
+	 * @brief onMouseDown Handler
+	 */
 	var onMouseDown = function() {
 		if(this.direction == eDirection.NONE) {
 			mouseDown.x = game.input.activePointer.x;
@@ -64,6 +84,9 @@ var GemBlox = (function(){
 		}
 	}
 
+	/**
+	 * @brief onMouseUp Handler
+	 */
 	var onMouseUp = function() {
 		if(this.direction == eDirection.NONE) {
 			mouseUp.x = game.input.activePointer.x;
@@ -81,17 +104,24 @@ var GemBlox = (function(){
 		}
 	}
 
+
 	// -----------------------------------------------------------
 	// --- Public functions --------------------------------------
 	// -----------------------------------------------------------
+
 	GemBlox.prototype = {
+		/**
+		 * @brief Function to get the Tile Position of the blox
+		 * @return Position structure {x, y}
+		 */
 		getTilePosition: function() {
 			return {x: Math.floor(this.sprite.x / TILE_SIZE), y: Math.floor(this.sprite.y / TILE_SIZE)};
 		},
 
-		update: function() {
-			this.sprite.body.setZeroVelocity();
-
+		/**
+		 * @brief Function to move the blox (sprite) on a direction
+		 */
+		move: function() {
 			switch(this.direction) {
 				case eDirection.UP:
 					this.sprite.body.moveUp(VELOCITY);
@@ -109,14 +139,25 @@ var GemBlox = (function(){
 					this.sprite.body.moveRight(VELOCITY);
 					break;
 			}
+		},
 
+		/**
+		 * @brief Function to resolve collisions on the blox
+		 */
+		solveCollisions: function() {
 			if(this.sprite.body.touching.left || this.sprite.body.touching.right || this.sprite.body.touching.up || this.sprite.body.touching.down) {
 				this.sprite.body.setZeroVelocity();
 				this.direction = eDirection.NONE;
 				fxCling.play();
 			}
+		},
 
+		/**
+		 * @brief Function to check if the blox has reached his destination
+		 */
+		checkBloxDestination: function() {
 			var pos = this.getTilePosition();
+
 			if(this.direction == eDirection.NONE) {
 				switch(this.color) {
 					case e_GemBloxColor.RED:
@@ -160,8 +201,16 @@ var GemBlox = (function(){
 						break;
 				}
 			}
+		},
 
-
+		/**
+		 * @brief Function to update 'visually' the blox
+		 */
+		update: function() {
+			this.sprite.body.setZeroVelocity();
+			this.move();
+			this.solveCollisions();
+			this.checkBloxDestination();
 		}
 	};
 

@@ -9,7 +9,6 @@
 // -----------------------------------------------------------
 var GAME_WIDTH = 640;
 var GAME_HEIGHT = 1024;
-
 var NB_CHAPTERS = 1; // Must be dynamic later
 var NB_STAGES = 7; // Must be dynamic later
 var SCALING = 1;
@@ -25,17 +24,16 @@ var gameState_e =  {
 };
 
 var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
-var tileMap; // Object
-var gemBloxs; // Object
-var menu; // Object
-var chapters; // Object
 var gameState = gameState_e.MENU_MAIN;
+var tileMap; 
+var gemBloxs; 
+var menu; 
+var chapters;
 
 var tileObstacles = new Array();
 var nbMovements = 0;
 
 // Fx objects
-var sounds;
 var fxCling;
 var fxBloxReached;
 var fxMainBgm;
@@ -48,6 +46,8 @@ var fxMainBgm;
  * @brief Function to preload assets
  */
  function preload() {
+
+ 	// Preload sprites
  	game.load.image(e_TileType.EMPTY.key,		'assets/img/pb_tile_empty_dark.png');
  	game.load.image(e_TileType.ROCK.key, 		'assets/img/pb_tile_rock.png');
  	game.load.image(e_TileType.FLAKE.key, 		'assets/img/pb_tile_flake.png');
@@ -73,26 +73,19 @@ var fxMainBgm;
  	game.load.audio('cling_reached', 'assets/sounds/cling_04.ogg');
  	game.load.audio('main_bgm', 'assets/sounds/main_bgm.mp3');
 
- 	game.time.advancedTiming = true;
-
-
-	// TODO: Chapters and stages MUST be dynamic !!!
-	// Load all chapters and stage
-	/*for(var chapter = 1; chapter <= NB_CHAPTERS; chapter++)
-		for(var stage = 1; stage <= NB_STAGES; stage++)
-			game.load.text('chapter_'+ twoDigits(chapter) +'_stage_'+ twoDigits(stage), 'assets/levels/chapter_'+ twoDigits(chapter) +'/stage_'+ twoDigits(stage) +'.json');*/
-
+ 	
+ 	// Preload all levels JSON files
 	for(var stage = 1; stage <= NB_STAGES; stage++)
 		game.load.text('stage_'+ twoDigits(stage), 'assets/levels/stage_'+ twoDigits(stage) +'.json');
-
-	
 }
 
 /**
  * @brief Function to create assets
  */
  function create() {
- 	if (game.device.desktop) {
+ 	// Scale the game 
+ 	if (game.device.desktop) // FOR DESKTOP DEVICE
+ 	{
  		game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
  		game.scale.minWidth = GAME_WIDTH / 2;
  		game.scale.minHeight = GAME_HEIGHT / 2;
@@ -101,12 +94,15 @@ var fxMainBgm;
  		game.scale.pageAlignHorizontally = true;
  		game.scale.pageAlignVertically = true;
  		game.scale.setScreenSize(true);
- 	} else {
+ 	} 
+ 	else // MOBILES OR OTHER DEVICES
+ 	{
+ 		// Not sure if theses lines are correct...
  		game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
  		game.scale.minWidth = GAME_WIDTH/2;
  		game.scale.minHeight = GAME_HEIGHT/2;
-		game.scale.maxWidth = 2048; // You can change this to GAME_WIDTH*2.5 if needed
-		game.scale.maxHeight = 1228; // Make sure these values are proportional to the GAME_WIDTH and GAME_HEIGHT
+		game.scale.maxWidth = 2048; 
+		game.scale.maxHeight = 1228; 
 		game.scale.pageAlignHorizontally = true;
 		game.scale.pageAlignVertically = true;
 		game.scale.forceOrientation(true, false);
@@ -114,24 +110,25 @@ var fxMainBgm;
 		game.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this);
 		game.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this);
 		game.scale.setScreenSize(true);
-
 	}
 
+	game.time.advancedTiming = true;
+
+	// Set sounds variables
 	fxCling = game.add.audio('cling');
 	fxBloxReached = game.add.audio('cling_reached');
 	fxMainBgm = game.add.audio('main_bgm');
 	fxMainBgm.loop = true;
 	fxMainBgm.play();
 
-
+	// Initialize the game physics
 	game.physics.startSystem(Phaser.Physics.NINJA);
 	game.physics.ninja.gravity = 0;
 	game.stage.backgroundColor = "#505050";
 
+	// Start the game
 	menu = new Menu();
 	menu.show();
-
-	getCount("assets/levels/");
 }
 
 /**
@@ -139,12 +136,17 @@ var fxMainBgm;
  */
  function update() {
  	switch(gameState) {
+ 		// --------------------------------------------
+ 		// Game state: In Game ------------------------
+ 		// --------------------------------------------
  		case gameState_e.IN_GAME:
+ 			// Detect collision between blox
  			for(var i = 0; i < gemBloxs.length; i++)
  				for(var j = 0; j < gemBloxs.length; j++)	
  					if(j!=i)
  						game.physics.ninja.collide(gemBloxs[i].sprite, gemBloxs[j].sprite, bloxCollideHandler);
 
+ 			// Detect collision between blox and tiles
  			for(var i = 0; i < gemBloxs.length; i++)
  				for(var j = 0; j < tileObstacles.length; j++)
  					game.physics.ninja.collide(gemBloxs[i].sprite, tileObstacles[j]);
@@ -153,24 +155,18 @@ var fxMainBgm;
 			for(var i = 0; i < gemBloxs.length; i++)
 				gemBloxs[i].update();
 			
-
+			// Update visuals UI
 			tileMap.txtMovements.text = "Nb. movements:  " + nbMovements;
-			isGameOver();
-			break;
-
-		case gameState_e.MENU_MAIN:
-			break;
-
-		case gameState_e.MENU_CHAPTERS:
-			break;
-
-		case gameState_e.MENU_STAGES:
+			checkGameOver();
 			break;
 
 		default: break;
 	}
 }
 
+/**
+ * @brief Function to handle blox collisions
+ */
 function bloxCollideHandler() {
 	for(var i = 0; i < gemBloxs.length; i++) {
 		var pos = gemBloxs[i].getTilePosition();
@@ -188,20 +184,6 @@ function bloxCollideHandler() {
 }
 
 /**
- * @brief Function to check if the game is complete
- */
- function isGameOver() {
- 	if(countCorrectBlox() == tileMap.exceptedBlox) {
- 		// Destroy the tilemap
- 		tileMap.destroy();
-
- 		// Back to chapters
- 		chapters = new Chapters(NB_STAGES);
-		chapters.show();
- 	}
- }
-
-/**
  * @brief Function to count how many blox is on the correct tile
  */
  function countCorrectBlox() {
@@ -214,6 +196,20 @@ function bloxCollideHandler() {
 }
 
 /**
+ * @brief Function to check if the game is complete
+ */
+ function checkGameOver() {
+ 	if(countCorrectBlox() == tileMap.exceptedBlox) {
+ 		// Destroy the tilemap
+ 		tileMap.destroy();
+
+ 		// Back to chapters
+ 		chapters = new Chapters(NB_STAGES);
+		chapters.show();
+ 	}
+ }
+
+/**
  * @brief Function to convert a number into 2 digits
  */
  function twoDigits(num) {
@@ -221,20 +217,11 @@ function bloxCollideHandler() {
  	return num;		
  }
 
+
+/**
+ * @brief Function to render some informations during debug phase
+ */
  function render() {
  	game.debug.text("Developement build - Version 1.0.6", 2, 14, "#00ff00");
  	game.debug.text("FPS: " + game.time.fps || '--', 2, 30, "#00ff00");   
  }
-
-
- function getCount(foldername) {
-    $.ajax({
-	    url: "assets/levels/",
-	    success: function (data) {
-	        var image_count = $(data).length(); 
-	        alert(image_count);    
-	    }
-	});
-  }
-
-
