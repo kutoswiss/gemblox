@@ -9,8 +9,9 @@
 // -----------------------------------------------------------
 var GAME_WIDTH = 640;
 var GAME_HEIGHT = 1024;
+
 var NB_CHAPTERS = 1; // Must be dynamic later
-var NB_STAGES = 3; // Must be dynamic later
+var NB_STAGES = 7; // Must be dynamic later
 var SCALING = 1;
 
 // -----------------------------------------------------------
@@ -83,7 +84,9 @@ var fxMainBgm;
 
 	for(var stage = 1; stage <= NB_STAGES; stage++)
 		game.load.text('stage_'+ twoDigits(stage), 'assets/levels/stage_'+ twoDigits(stage) +'.json');
-	}
+
+	
+}
 
 /**
  * @brief Function to create assets
@@ -111,6 +114,7 @@ var fxMainBgm;
 		game.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this);
 		game.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this);
 		game.scale.setScreenSize(true);
+
 	}
 
 	fxCling = game.add.audio('cling');

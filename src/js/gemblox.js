@@ -50,6 +50,7 @@ var GemBlox = (function(){
 		this.sprite.events.onInputUp.add(onMouseUp, this);
 		this.sprite.x = p_x * TILE_SIZE;
 		this.sprite.y = p_y * TILE_SIZE;
+		this.sprite.scale.setTo(SCALING, SCALING);
 
 		game.physics.ninja.enableAABB(this.sprite);
 		this.sprite.immovable = true;
