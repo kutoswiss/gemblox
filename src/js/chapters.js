@@ -25,7 +25,7 @@ var Chapters = (function(){
 		btnsChapter = new Array(amountChapter);
 		txtsChapter = new Array(amountChapter);
 		gameState = gameState_e.MENU_CHAPTERS;
-		style = { font: "32px Arial", fill: "#ff0044", align: "center" };
+		style = { font: "32px Arial", fill: "#ffffff", align: "center" };
 	}
 
 	/**
@@ -37,7 +37,10 @@ var Chapters = (function(){
 			txtsChapter[i].destroy();
 		}
 
-		tileMap = new TileMap(5, 8);
+		var nbTileWidth = 6;
+		var nbTileHeight = 9;
+
+		tileMap = new TileMap(nbTileWidth, nbTileHeight);
 		tileMap.load(1, this.id);
 	}
 

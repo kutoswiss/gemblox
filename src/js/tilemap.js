@@ -13,6 +13,11 @@ var TileMap = (function(){
 	var grid;
 	this.txtMovements;
 	this.exceptedBlox;
+	this.wall;
+	this.offset;
+	this.btnReset;
+	this.btnBack;
+	this.level;
 
 	// -----------------------------------------------------------
 	// --- Private functions -------------------------------------
@@ -20,13 +25,31 @@ var TileMap = (function(){
 	var TileMap = function(p_width, p_height) {
 		this.width = p_width;
 		this.height = p_height;
-		grid = new Array(this.height);
 
+		this.offset = {
+			x: -(GAME_WIDTH - (this.width * TILE_SIZE)) / 2, 
+			y: -(GAME_HEIGHT - (this.height * TILE_SIZE) + 15)
+		};
+
+		grid = new Array(this.height);
 		for(var y = 0; y < this.height; y++)
 			grid[y] = new Array(this.width);
 
 		nbMovements = 0;
 		this.exceptedBlox = 0;
+
+		this.wall = new Array();
+		var right = game.add.sprite(this.width * TILE_SIZE, 0, '');	
+		right.height = GAME_HEIGHT;
+		game.physics.ninja.enableTile(right, right.frame);
+		var bottom 	= game.add.sprite(0, this.height * TILE_SIZE, '');
+		bottom.width = GAME_WIDTH;
+		game.physics.ninja.enableTile(bottom, bottom.frame);
+		
+		this.wall.push(right);
+		this.wall.push(bottom);
+
+		this.level = 0;
 	}
 
 	var twoDigits = function(num) {
@@ -34,11 +57,24 @@ var TileMap = (function(){
 		return num;	
 	}
 
+	var btnResetOnClick = function() {
+		this.destroy();
+		this.load(1, this.level);
+	}
+
+	var btnBackOnClick = function() {
+		this.destroy();
+		chapters = new Chapters(NB_STAGES);
+		chapters.show();
+	}
+
 	// -----------------------------------------------------------
 	// --- Public functions --------------------------------------
 	// -----------------------------------------------------------
 	TileMap.prototype = {
 		load: function(p_chapter, p_level) {
+			this.level = p_level;
+
 			var str_chapter = twoDigits(p_chapter);
 			var str_level = twoDigits(p_level);
 
@@ -49,8 +85,8 @@ var TileMap = (function(){
 			var jsonHeight = json['height'];
 			var tm = json['tiles'];
 
-			for(var h = 0; h < jsonHeight; h++) {
-				for(var w = 0; w < jsonWidth; w++) {
+			for(var h = 0; h < this.height; h++) {
+				for(var w = 0; w < this.width; w++) {
 					
 					// OPTIONAL TODO: Put all enum's value on an array and access it with tm[h][w]
 					// TODO: Values must be constants type
@@ -78,6 +114,10 @@ var TileMap = (function(){
 						case 13:
 							grid[h][w] = new Tile(e_TileType.GB_YELLOW, w, h);
 							break;
+
+						default:
+							grid[h][w] = new Tile(e_TileType.EMPTY, w, h);
+							break;
 					}	
 				}
 			}
@@ -89,10 +129,18 @@ var TileMap = (function(){
 
 			gameState = gameState_e.IN_GAME;
 
-			var text = "Nb. movements:" + nbMovements;
-			var style = { font: "15px Arial", fill: "#00ff00", align: "center" };
-			this.txtMovements = game.add.text(2, 35, text, style);
+			var text = "Moves: " + nbMovements;
+			var style = { font: "20px Arial", fill: "#ffffff", align: "center" };
+			this.txtMovements = game.add.text(15, 10, text, style);
 			this.exceptedBlox = bloxAmount;
+
+			this.btnReset = game.add.text(GAME_WIDTH - 200, 10, "RESET", style);
+			this.btnReset.inputEnabled = true;
+			this.btnReset.events.onInputUp.add(btnResetOnClick, this);
+
+			this.btnBack = game.add.text(GAME_WIDTH - 100, 10, "BACK", style);
+			this.btnBack.inputEnabled = true;
+			this.btnBack.events.onInputUp.add(btnBackOnClick, this);
 		},
 
 		getGrid: function() {
@@ -107,6 +155,11 @@ var TileMap = (function(){
 			return this.height;
 		},
 
+		end: function() {
+			// TODO: Show the score table + options
+			// Options: 1) Retry, 2) Next level, 3) Quit
+		},
+
 		destroy: function() {
 			for(var h = 0; h < this.height; h++) 
 				for(var w = 0; w < this.width; w++) 
@@ -116,6 +169,13 @@ var TileMap = (function(){
 				gemBloxs[i].sprite.destroy();
 
 			this.txtMovements.destroy();
+			this.btnReset.destroy();
+			this.btnBack.destroy();
+			nbMovements = 0;
+		},
+
+		update: function() {
+			this.txtMovements.text = "Moves:   " + nbMovements;
 		}
 	};
 

@@ -8,9 +8,9 @@
 // --- Constants  --------------------------------------------
 // -----------------------------------------------------------
 var GAME_WIDTH = 640;
-var GAME_HEIGHT = 1024;
+var GAME_HEIGHT = 960;
 var NB_CHAPTERS = 1; // Must be dynamic later
-var NB_STAGES = 7; // Must be dynamic later
+var NB_STAGES = 8; // Must be dynamic later
 var SCALING = 1;
 
 // -----------------------------------------------------------
@@ -23,7 +23,7 @@ var gameState_e =  {
 	IN_GAME: 1.0
 };
 
-var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
+var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, 'gameDiv', { preload: preload, create: create, update: update, render: render});
 var gameState = gameState_e.MENU_MAIN;
 var tileMap; 
 var gemBloxs; 
@@ -62,16 +62,16 @@ var fxMainBgm;
  	game.load.image(e_GemBloxColor.GREEN.key, 	'assets/img/gem_blox_green.png');
  	game.load.image(e_GemBloxColor.YELLOW.key, 	'assets/img/gem_blox_yellow.png');
 
- 	game.load.image('logo', 	'assets/img/logo.png');
- 	game.load.image('btn_play', 'assets/img/button_play.png');
- 	game.load.image('btn_options', 'assets/img/button_options.png');
- 	game.load.image('btn_about', 'assets/img/button_about.png');
+ 	game.load.image('logo', 		'assets/img/logo.png');
+ 	game.load.image('btn_play', 	'assets/img/button_play.png');
+ 	game.load.image('btn_options', 	'assets/img/button_options.png');
+ 	game.load.image('btn_about', 	'assets/img/button_about.png');
  	game.load.image('btn_stage', 	'assets/img/button_stage.png');
 
 
- 	game.load.audio('cling', 'assets/sounds/cling_03.mp3');
- 	game.load.audio('cling_reached', 'assets/sounds/cling_04.ogg');
- 	game.load.audio('main_bgm', 'assets/sounds/main_bgm.mp3');
+ 	game.load.audio('cling', 			'assets/sounds/cling_03.mp3');
+ 	game.load.audio('cling_reached', 	'assets/sounds/cling_04.ogg');
+ 	game.load.audio('main_bgm', 		'assets/sounds/main_bgm.mp3');
 
  	
  	// Preload all levels JSON files
@@ -87,8 +87,8 @@ var fxMainBgm;
  	if (game.device.desktop) // FOR DESKTOP DEVICE
  	{
  		game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
- 		game.scale.minWidth = GAME_WIDTH / 2;
- 		game.scale.minHeight = GAME_HEIGHT / 2;
+ 		game.scale.minWidth = GAME_WIDTH /2;
+ 		game.scale.minHeight = GAME_HEIGHT /2;
  		game.scale.maxWidth = GAME_WIDTH;
  		game.scale.maxHeight = GAME_HEIGHT;
  		game.scale.pageAlignHorizontally = true;
@@ -124,7 +124,7 @@ var fxMainBgm;
 	// Initialize the game physics
 	game.physics.startSystem(Phaser.Physics.NINJA);
 	game.physics.ninja.gravity = 0;
-	game.stage.backgroundColor = "#505050";
+	game.stage.backgroundColor = "#404040";
 
 	// Start the game
 	menu = new Menu();
@@ -140,23 +140,26 @@ var fxMainBgm;
  		// Game state: In Game ------------------------
  		// --------------------------------------------
  		case gameState_e.IN_GAME:
- 			// Detect collision between blox
- 			for(var i = 0; i < gemBloxs.length; i++)
+ 			// Handle collisions with blox
+ 			for(var i = 0; i < gemBloxs.length; i++) {
+ 				// Detect collision between blox
  				for(var j = 0; j < gemBloxs.length; j++)	
  					if(j!=i)
  						game.physics.ninja.collide(gemBloxs[i].sprite, gemBloxs[j].sprite, bloxCollideHandler);
 
- 			// Detect collision between blox and tiles
- 			for(var i = 0; i < gemBloxs.length; i++)
+ 				// Detect collision between blox and tiles
  				for(var j = 0; j < tileObstacles.length; j++)
  					game.physics.ninja.collide(gemBloxs[i].sprite, tileObstacles[j]);
- 			
-			// Update all blox's positions
-			for(var i = 0; i < gemBloxs.length; i++)
-				gemBloxs[i].update();
-			
-			// Update visuals UI
-			tileMap.txtMovements.text = "Nb. movements:  " + nbMovements;
+
+ 				// Detect collision between blox and wall
+ 				for(var j = 0; j < tileMap.wall.length; j++)
+ 					game.physics.ninja.collide(gemBloxs[i].sprite, tileMap.wall[j]);
+
+ 				// Update all blox's positions
+ 				gemBloxs[i].update();
+ 			}
+
+ 			tileMap.update();
 			checkGameOver();
 			break;
 
@@ -176,10 +179,11 @@ function bloxCollideHandler() {
 		gemBloxs[i].sprite.body.setZeroVelocity();
 
 		// Repositioning correctly the blox on the tilemap
-		gemBloxs[i].sprite.body.x = (pos.x+0.5) * TILE_SIZE;
-		gemBloxs[i].sprite.body.y = (pos.y+0.5) * TILE_SIZE;
+		gemBloxs[i].sprite.body.x = (pos.x + 0.5) * TILE_SIZE;
+		gemBloxs[i].sprite.body.y = (pos.y + 0.5) * TILE_SIZE;
 
 		fxCling.play();
+
 	}
 }
 
@@ -222,6 +226,6 @@ function bloxCollideHandler() {
  * @brief Function to render some informations during debug phase
  */
  function render() {
- 	game.debug.text("Developement build - Version 1.0.6", 2, 14, "#00ff00");
- 	game.debug.text("FPS: " + game.time.fps || '--', 2, 30, "#00ff00");   
+ 	//game.debug.text("Developement build - Version 1.0.6", 2, 14, "#00ff00");
+ 	//game.debug.text("FPS: " + game.time.fps || '--', 2, 30, "#00ff00");   
  }

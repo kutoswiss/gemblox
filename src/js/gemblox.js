@@ -67,7 +67,10 @@ var GemBlox = (function() {
 		this.sprite.events.onInputUp.add(onMouseUp, this);
 		this.sprite.x = p_x * TILE_SIZE;
 		this.sprite.y = p_y * TILE_SIZE;
-		this.sprite.scale.setTo(SCALING, SCALING);
+		this.sprite.width = TILE_SIZE;
+		this.sprite.height = TILE_SIZE;
+		this.sprite.pivot.x = tileMap.offset.x;
+		this.sprite.pivot.y = tileMap.offset.y;
 
 		game.physics.ninja.enableAABB(this.sprite);
 		this.sprite.immovable = true;
@@ -108,8 +111,8 @@ var GemBlox = (function() {
 	// -----------------------------------------------------------
 	// --- Public functions --------------------------------------
 	// -----------------------------------------------------------
-
 	GemBlox.prototype = {
+
 		/**
 		 * @brief Function to get the Tile Position of the blox
 		 * @return Position structure {x, y}

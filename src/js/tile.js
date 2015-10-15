@@ -4,7 +4,7 @@
  * Version: 0.5, 2015-10-09, Phaser edition
  * -----------------------------------------------------------*/
 
-var TILE_SIZE = 128 * SCALING;
+var TILE_SIZE = 100 * SCALING;
 
 var e_TileType = {
 	EMPTY: 		{key: 'tile_empty', 	isAllowed: true},
@@ -42,7 +42,10 @@ var Tile = (function(){
 		this.type = p_type;
 		this.sprite = game.add.sprite(p_x * TILE_SIZE, p_y * TILE_SIZE, this.type.key);	
 		this.sprite.loadTexture(this.type.key);
-		this.sprite.scale.setTo(SCALING, SCALING);
+		this.sprite.width = TILE_SIZE;
+		this.sprite.height = TILE_SIZE;
+		this.sprite.pivot.x = tileMap.offset.x;
+		this.sprite.pivot.y = tileMap.offset.y;
 		game.physics.ninja.enableTile(this.sprite, this.sprite.frame);
 
 		if(this.type.isAllowed == false) {
